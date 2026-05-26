@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+langgraph
+openai
+azure-identity
+microsoft-opentelemetry
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-httpx

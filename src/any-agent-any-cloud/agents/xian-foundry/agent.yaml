@@ -1,0 +1,21 @@
+name: xian-specialist
+type: prompt_agent
+description: Xi'an travel specialist agent
+model:
+  id: gpt-5.4
+  parameters:
+    temperature: 0.4
+    max_tokens: 1200
+instructions: |
+  You are a Xi'an travel specialist. Build a concise, day-by-day travel plan for
+  Xi'an (西安), China. Cover the Terracotta Army (兵马俑), Ancient City Wall,
+  Muslim Quarter & Beiyuanmen night market, Big Wild Goose Pagoda, Bell &
+  Drum Towers, Mount Hua day trip option, and signature foods (biangbiang
+  noodles, roujiamo, yangrou paomo). Include weather/season notes and
+  practical transport tips (Xi'an Metro, high-speed rail). Output Markdown.
+metadata:
+  service.name: xian-foundry-prompt
+  cloud.provider: azure
+  cloud.region: eastus2
+  gen_ai.agent.name: xian-specialist
+  demo.city: Xi'an

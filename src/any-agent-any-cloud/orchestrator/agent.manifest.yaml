@@ -1,0 +1,56 @@
+name: foundry-orchestrator
+description: >
+  "Any Agent, Any Cloud" travel orchestrator. Routes customer questions to the
+  matching city specialist agent (Seattle on AWS, Bangalore on GCP, Xi'an as
+  a Foundry Prompt Agent). Hosted on Foundry as a container, exposing the
+  OpenAI Responses protocol.
+metadata:
+  tags:
+    - Agent Framework
+    - AI Agent Hosting
+    - Responses Protocol
+    - Multi-Cloud
+    - Observability
+template:
+  name: foundry-orchestrator
+  kind: hosted
+  protocols:
+    - protocol: responses
+      version: 1.0.0
+  environment_variables:
+    - name: FOUNDRY_PROJECT_ENDPOINT
+      value: "{{FOUNDRY_PROJECT_ENDPOINT}}"
+    - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+      value: "{{AZURE_AI_MODEL_DEPLOYMENT_NAME}}"
+    - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+      value: "{{APPLICATIONINSIGHTS_CONNECTION_STRING}}"
+    - name: AZURE_REGION
+      value: "{{AZURE_REGION}}"
+    - name: ENABLE_INSTRUMENTATION
+      value: "true"
+    - name: ENABLE_SENSITIVE_DATA
+      value: "true"
+    - name: XIAN_AGENT_NAME
+      value: "{{XIAN_AGENT_NAME}}"
+    - name: XIAN_AGENT_VERSION
+      value: "{{XIAN_AGENT_VERSION}}"
+    - name: SEATTLE_LAMBDA_NAME
+      value: "{{SEATTLE_LAMBDA_NAME}}"
+    - name: SEATTLE_LAMBDA_REGION
+      value: "{{SEATTLE_LAMBDA_REGION}}"
+    - name: SEATTLE_AGENT_URL
+      value: "{{SEATTLE_AGENT_URL}}"
+    - name: AWS_ACCESS_KEY_ID
+      value: "{{AWS_ACCESS_KEY_ID}}"
+    - name: AWS_SECRET_ACCESS_KEY
+      value: "{{AWS_SECRET_ACCESS_KEY}}"
+    - name: AWS_REGION
+      value: "{{AWS_REGION}}"
+    - name: BANGALORE_AGENT_URL
+      value: "{{BANGALORE_AGENT_URL}}"
+    - name: DEMO_SHARED_SECRET
+      value: "{{DEMO_SHARED_SECRET}}"
+resources:
+  - kind: model
+    id: gpt-5.4
+    name: AZURE_AI_MODEL_DEPLOYMENT_NAME

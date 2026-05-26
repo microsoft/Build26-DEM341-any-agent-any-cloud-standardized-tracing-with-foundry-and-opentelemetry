@@ -6,107 +6,97 @@
 
 # [Microsoft Build 2026](https://build.microsoft.com)
 
-## 🔥 DEM341: Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry
+## 🔥 DEM341: Any agent, any cloud: Standardized tracing with Foundry + OpenTelemetry
 
 ### Session Description
 
-Teams are shipping agents across clouds and frameworks—but telemetry is fragmented. In this demo, see how Microsoft Foundry and OpenTelemetry standards for GenAI tracing bring consistent observability that is agent framework agnostic and cloud agnostic. We’ll walk through the simple setup steps to instrument model and tool calls, quickly diagnose failures, latency, and cost spikes, and close the loop with trace-based evaluation, visualization and optimization
+Teams are shipping agents across clouds and frameworks, but telemetry is often fragmented. This demo shows how Microsoft Foundry and OpenTelemetry GenAI semantic conventions create one observability plane for agents running on Microsoft Foundry, AWS Lambda, GCP Cloud Run, and GitHub Copilot SDK-based fallback paths.
 
-### 🏫 Getting started in a guided session
+The repo contains the reproducible demo assets: a Foundry-hosted orchestrator, a Seattle LangGraph agent on AWS Lambda, a Bangalore Google ADK agent on GCP Cloud Run, a Xi'an Foundry Prompt Agent, deployment scripts, OpenTelemetry conventions, and evaluation setup notes.
 
-To get started in a guided lab session:
-- <!-- step 1 -->
-- <!-- step 2 -->
-- <!-- step 3 -->
+### 🚀 Getting started
 
-### 🏠 Getting started in your own environment
-
-If you're following these steps at your own pace:
-- Clone this repository
-- Set up your development environment
-- <!-- step 3 -->
+1. Clone this repository.
+1. Open the demo source in [`src/any-agent-any-cloud`](src/any-agent-any-cloud).
+1. Follow [`docs/recreate-demo.md`](docs/recreate-demo.md) to provision Microsoft Foundry, deploy the external agents, and validate traces in Application Insights.
+1. Review [`docs/otel-conventions.md`](docs/otel-conventions.md) for the span names, resource attributes, and trace propagation contract used by the demo.
 
 ### 🧠 Learning Outcomes
 
-By the end of this session, you will be able to:
+By the end of this demo, you will be able to:
 
-- <!-- outcome 1 -->
-- <!-- outcome 2 -->
-- <!-- outcome 3 -->
+- Explain how OpenTelemetry GenAI semantic conventions make agent traces portable across frameworks and clouds.
+- Deploy a Foundry-hosted orchestrator that routes to agents running on Microsoft Foundry, AWS Lambda, and GCP Cloud Run.
+- Use the Microsoft OpenTelemetry distro for Python to emit request, framework, and model spans into Azure Monitor.
+- Validate a distributed trace in Application Insights and Microsoft Foundry Observability.
 
 ### 💬 Keep Learning with Copilot
 
-Try these prompts with GitHub Copilot to explore the topics from this session. Open Copilot Chat in VS Code (`Ctrl+Alt+I` on Windows/Linux, `Cmd+Shift+I` on Mac), paste a prompt, and see what you learn. Try connecting the [Microsoft Learn MCP Server](#-microsoft-learn-mcp-server) for the latest official documentation.
+Try these prompts with GitHub Copilot Chat after you clone the repo:
 
-Use these as a starting point — or write your own!
-
-<!-- Prompts will be tailored to this session's content during repo setup. -->
-
-> *Prompts coming soon — check back after the session content is finalized.*
+- `Explain how src/any-agent-any-cloud/orchestrator/main.py propagates W3C trace context to the city specialists.`
+- `Show me where the Seattle LangGraph agent configures microsoft-opentelemetry and how its spans get agent identity attributes.`
+- `Walk me through docs/recreate-demo.md and tell me which cloud credentials I need before running the deployment scripts.`
+- `Using docs/otel-conventions.md, summarize the ideal trace tree for a Seattle request.`
+- `Help me adapt the Bangalore ADK agent to a different city while preserving the GenAI telemetry attributes.`
 
 ### 💻 Technologies Used
 
-1. <!-- technology 1 -->
-1. <!-- technology 2 -->
-1. <!-- technology 3 -->
+1. [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+1. [Foundry hosted agents](https://learn.microsoft.com/azure/ai-foundry/agents/concepts/hosted-agents)
+1. [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
+1. [Microsoft OpenTelemetry distro for Python](https://github.com/microsoft/opentelemetry-distro-python)
+1. [Azure Monitor Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+1. [AWS Lambda](https://docs.aws.amazon.com/lambda/)
+1. [Google Cloud Run](https://cloud.google.com/run/docs)
+1. [Google Agent Development Kit](https://google.github.io/adk-docs/)
+1. [LangGraph](https://langchain-ai.github.io/langgraph/)
 
 ### 📚 Resources and Next Steps
 
 | Resource | Description |
 |:---------|:------------|
-| [https://aka.ms/build26-next-steps](https://aka.ms/build26-next-steps) | Explore lab and session repos to further your learning from Microsoft Build |
-
+| [`docs/recreate-demo.md`](docs/recreate-demo.md) | End-to-end setup and deployment runbook. |
+| [`docs/otel-conventions.md`](docs/otel-conventions.md) | Span names, attributes, service names, and propagation rules used by the demo. |
+| [`docs/foundry-eval-setup.md`](docs/foundry-eval-setup.md) | Optional evaluation setup for trace-linked quality checks. |
+| [`src/any-agent-any-cloud`](src/any-agent-any-cloud) | Source code for the orchestrator, agents, infrastructure, and deployment scripts. |
+| [https://aka.ms/build26-next-steps](https://aka.ms/build26-next-steps) | Explore lab and session repos to further your learning from Microsoft Build. |
 
 ### 🌟 Microsoft Learn MCP Server
 
 The Microsoft Learn MCP Server gives your AI agent direct access to Microsoft's official documentation — grounded, up-to-date answers about the products and services covered in this session.
 
-**VS Code** — One click installation: 
+**Visual Studio Code** — One click installation:
 
-[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Microsoft_Learn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=microsoft-learn&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Flearn.microsoft.com%2Fapi%2Fmcp%22%7D)
-
+[![Install in Visual Studio Code](https://img.shields.io/badge/Visual_Studio_Code-Install_Microsoft_Learn_MCP-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=microsoft-learn&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Flearn.microsoft.com%2Fapi%2Fmcp%22%7D)
 
 **GitHub Copilot CLI** — Run this to install the Learn MCP Server as a plugin:
-```
+
+```text
 /plugin install microsoftdocs/mcp
 ```
 
-For more info, other clients, and to post questions, visit the [Learn MCP Server repo](https://aka.ms/learnmcp).
+For more information, other clients, and to post questions, visit the [Learn MCP Server repo](https://aka.ms/learnmcp).
 
 ## Content Owners
 
-<!-- TODO: Add yourself as a content owner
-1. Change the src in the image tag to {your github url}.png
-2. Change INSERT NAME HERE to your name
-3. Change the github url in the final href to your url. -->
-
 <table>
 <tr>
-    <td align="center"><a href="http://github.com/yourGitHubHandle">
-        <img src="https://github.com/yourGitHubHandle.png" width="100px;" alt="INSERT NAME HERE"/><br />
-        <sub><b>INSERT NAME HERE</b></sub></a><br />
-            <a href="https://github.com/yourGitHubHandle" title="talk">📢</a>
+    <td align="center"><a href="https://github.com/nagkumar91">
+        <img src="https://github.com/nagkumar91.png" width="100px;" alt="Nagkumar"/><br />
+        <sub><b>Nagkumar</b></sub></a><br />
+            <a href="https://github.com/nagkumar91" title="talk">📢</a>
     </td>
 </tr></table>
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
+This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the pull request appropriately. Simply follow the instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
-trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Any use of third-party trademarks or logos are subject to those third-party's policies.

@@ -27,3 +27,12 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+
+# Demo-generated local state and deployment outputs
+.azure/
+logs/
+infra/
+src/any-agent-any-cloud/.azure/
+src/any-agent-any-cloud/logs/
+src/any-agent-any-cloud/infra/
+src/any-agent-any-cloud/ui/.next/

@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pydantic
+google-adk>=0.4.0
+google-cloud-aiplatform
+microsoft-opentelemetry
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-httpx

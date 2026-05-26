@@ -1,0 +1,27 @@
+# Lambda container image for Seattle agent (LangGraph on Lambda + Azure Foundry model).
+# Uses AWS Lambda Web Adapter so the FastAPI app runs unmodified.
+# Built for linux/arm64 to run cheaper on Graviton (~20% lower $).
+FROM public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 AS adapter
+
+FROM python:3.12-slim
+
+COPY --from=adapter /lambda-adapter /opt/extensions/lambda-adapter
+
+WORKDIR /var/task
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY telemetry.py main.py ./
+
+ENV PORT=8080 \
+    AWS_LWA_PORT=8080 \
+    AWS_LWA_READINESS_CHECK_PATH=/healthz \
+    PYTHONUNBUFFERED=1
+
+EXPOSE 8080
+
+CMD ["sh","-c","uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

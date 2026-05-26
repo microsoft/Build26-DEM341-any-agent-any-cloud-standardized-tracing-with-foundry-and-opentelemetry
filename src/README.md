@@ -1,14 +1,14 @@
-# /src
+# Source code
 
-This folder is for source code and demo code associated with your session.
+The demo implementation lives in [`any-agent-any-cloud/`](any-agent-any-cloud/).
 
-## What goes here
+It includes:
 
-- Sample applications or scripts demonstrated during the session
-- Starter code that attendees can use as a starting point
-- Solution code for completed exercises
+- `orchestrator/` — Microsoft Foundry hosted agent using Microsoft Agent Framework.
+- `agents/seattle-langgraph/` — Seattle specialist running on AWS Lambda with LangGraph and the Microsoft OpenTelemetry distro for Python.
+- `agents/bangalore-adk/` — Bangalore specialist running on GCP Cloud Run with Google ADK.
+- `agents/xian-foundry/` — Xi'an native Foundry Prompt Agent definition.
+- `ui/` — optional local Next.js UI for sending requests and visualizing the selected agent.
+- `azd-infra/`, `azure.yaml`, and `scripts/` — deployment assets used by the runbook.
 
-## Tips
-
-- Include a README or comments explaining how to run the code
-- If your session doesn't include source code, feel free to remove this folder
+Start with [`../docs/recreate-demo.md`](../docs/recreate-demo.md).
