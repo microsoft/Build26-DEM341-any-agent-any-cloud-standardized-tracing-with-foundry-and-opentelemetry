@@ -1,10 +1,9 @@
 # Foundry Orchestrator
 
 The orchestrator is deployed as a **Foundry Hosted Agent** (`agent.yaml`)
-with three tools that call the remote city specialists. For local dev and
-UI testing we also provide a FastAPI shim (`main.py`) that performs the
-same routing and OTel trace propagation so the UI can develop against the
-same contract while Foundry deployment is wired up.
+with workflow executors that call the remote city specialists. For local
+development, run `main.py` directly to exercise the same routing and OTel
+trace propagation contract before deploying to Foundry.
 
 ## Local run (dev shim)
 

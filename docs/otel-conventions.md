@@ -66,4 +66,4 @@ Body: { "query": "<user request>", "trip_dates": "optional", "preferences": "opt
 Response: { "city": "...", "itinerary": "markdown", "agent": "...", "trace_id": "..." }
 ```
 
-All four agents return `trace_id` so the UI can deep-link to Foundry Observability for that trace.
+All four agents return `trace_id` so clients can deep-link to Foundry Observability or query Application Insights for that trace.

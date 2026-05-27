@@ -92,7 +92,7 @@ Two evaluator caveats matter for this demo:
 
 ### Verify it is working
 
-1. Generate 5-10 fresh production requests through the demo UI or the agent playground.
+1. Generate 5-10 fresh production requests through the hosted orchestrator endpoint or the agent playground.
 2. Return to **Monitor** on `foundry-orchestrator`.
 3. Expand the time range to **Last 30 minutes**.
 4. Verify you see:

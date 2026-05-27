@@ -35,4 +35,3 @@ infra/
 src/any-agent-any-cloud/.azure/
 src/any-agent-any-cloud/logs/
 src/any-agent-any-cloud/infra/
-src/any-agent-any-cloud/ui/.next/

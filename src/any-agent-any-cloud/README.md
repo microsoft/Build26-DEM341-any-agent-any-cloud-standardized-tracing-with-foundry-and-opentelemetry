@@ -14,7 +14,7 @@ This repo is a travel-concierge demo that proves a simple thesis: **Azure AI Fou
 ## Architecture
 
 ```text
-Browser UI (Next.js + React Flow)
+Client / curl / Foundry playground
         |
         | OpenAI Responses API
         v
@@ -25,7 +25,7 @@ Browser UI (Next.js + React Flow)
 | - deployed by azd as `foundry-orchestrator`                   |
 +---------+----------------+----------------+-------------------+
           |                |                |
-          | HTTPS / boto3  | HTTPS          | Foundry call      | local subprocess
+          | HTTPS          | HTTPS          | Foundry call      | local subprocess
           v                v                v                   v
 +------------------+ +------------------+ +------------------+ +------------------+
 | Seattle agent    | | Bangalore agent  | | Xi'an agent      | | Copilot fallback |
@@ -77,7 +77,6 @@ infra/         Generated environment files and connection-string artifacts
 logs/          Local log output used during development/demo runs
 orchestrator/  Foundry hosted orchestrator, Docker assets, and OTel collector config
 scripts/       Deployment helpers for AWS, GCP, and Foundry prompt agents
-ui/            Next.js + React Flow frontend for the demo
 azure.yaml     azd service definition for the Foundry hosted orchestrator
 ```
 
@@ -87,7 +86,6 @@ azure.yaml     azd service definition for the Foundry hosted orchestrator
 
 - Azure Developer CLI (`azd`) and Azure CLI authenticated to a subscription
 - Python **3.12+**
-- Node.js **20+**
 - Docker (used by the AWS Lambda image build and Azure remote build flow)
 - AWS CLI configured for an account that can deploy Lambda, ECR, and IAM resources
 - `gcloud` CLI configured for a project that can deploy Cloud Run and Vertex AI access
@@ -133,26 +131,16 @@ python scripts/deploy-foundry.py
 
 This creates or updates the Xi'an Prompt Agent plus the Seattle and Bangalore external-agent wrappers, then writes Foundry agent metadata to `infra/foundry-endpoints.env`.
 
-### 5) Start the UI
-
-```bash
-cd ui
-npm install
-npm run dev
-```
-
-Then open `http://localhost:3000`.
-
 ## How to verify it works
 
-1. Start the UI and send a query such as:
+1. Invoke the hosted orchestrator with a query such as:
 
 ```text
 Plan a rainy weekend in Seattle with two kids.
 ```
 
 2. Confirm the orchestrator routes to the Seattle specialist and returns an itinerary.
-3. Open the trace in **Foundry Observability** and look for:
+3. Open the trace in **Foundry Observability** or query Application Insights and look for:
    - one distributed trace rooted in the hosted orchestrator
    - child spans for the selected specialist call, with W3C trace continuity across hops
    - `gen_ai.*` attributes on the model/tool spans

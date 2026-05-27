@@ -20,7 +20,6 @@ Install and authenticate these tools:
 - Google Cloud CLI
 - Docker with Buildx
 - Python 3.12 or later
-- Node.js 20 or later, if you want to run the optional UI
 
 Authenticate:
 
@@ -213,13 +212,3 @@ foundry-orchestrator
 ```
 
 The LangGraph spans are emitted by the Microsoft OpenTelemetry distro for Python with static agent identity configured in `agents/seattle-langgraph/telemetry.py`.
-
-## 9. Optional UI
-
-```bash
-cd ui
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000`.
