@@ -6,15 +6,15 @@
 
 # [Microsoft Build 2026](https://build.microsoft.com)
 
-## 🔥 DEM341: Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry
+## DEM341: Any agent, any cloud: Standardized tracing with Foundry and OpenTelemetry
 
-### Session Description
+### Overview
 
 Teams are shipping agents across clouds and frameworks, but telemetry is fragmented. In this demo, see how Microsoft Foundry and OpenTelemetry GenAI semantic conventions bring consistent observability to agents built with different frameworks and hosted on different clouds. We will walk through a multi-agent travel concierge, diagnose routing and latency with unified traces, and close the loop with trace-based evaluation in Microsoft Foundry.
 
-This repository is the single call to action for DEM341. Start here for the demo walkthrough, sample code, slides, and community links.
+This repository is the central starting point for DEM341. Start here for the demo walkthrough, sample code, slides, and community links.
 
-### 🚀 Getting started
+### Getting started
 
 If you are following the demo at your own pace:
 
@@ -23,7 +23,7 @@ If you are following the demo at your own pace:
 3. Open the demo walkthrough and sample code when they are published in this repo.
 4. Use GitHub Issues for questions, bugs, or follow-up requests.
 
-### 🧭 Demo showcase
+### Demo showcase
 
 The demo proves a simple thesis: Foundry observability can work with any agent framework on any cloud when every agent emits standard OpenTelemetry GenAI spans.
 
@@ -37,7 +37,7 @@ The demo proves a simple thesis: Foundry observability can work with any agent f
 | Unified tracing | One distributed trace across Foundry, AWS, Google Cloud, and GitHub-backed execution paths using W3C trace context and OpenTelemetry GenAI semantic conventions. |
 | Trace-based evaluation | Evaluation results that connect quality, routing, latency, and trace evidence in Microsoft Foundry. |
 
-### 🧠 Learning Outcomes
+### Learning outcomes
 
 By the end of this demo, you will be able to:
 
@@ -46,7 +46,7 @@ By the end of this demo, you will be able to:
 3. Propagate W3C trace context across agent boundaries so a single request appears as one distributed trace.
 4. Use Microsoft Foundry Observability and evaluation to debug agent routing, latency, cost, and answer quality.
 
-### 💬 Keep Learning with Copilot
+### Explore with GitHub Copilot
 
 Try these prompts with GitHub Copilot to explore the topics from this demo. Open Copilot Chat in Visual Studio Code (`Ctrl+Alt+I` on Windows/Linux, `Cmd+Shift+I` on Mac), paste a prompt, and use this repository as the working context.
 
@@ -57,7 +57,7 @@ Use these as a starting point — or write your own!
 - "Summarize the OpenTelemetry GenAI attributes this demo relies on and where each one is emitted."
 - "Find the evaluation dataset and explain which rows test happy paths, fan-out, fallback, and adversarial behavior."
 
-### 💻 Technologies Used
+### Technologies used
 
 | Area | Technologies |
 |:-----|:-------------|
@@ -68,7 +68,7 @@ Use these as a starting point — or write your own!
 | Evaluation | Microsoft Foundry evaluation, curated travel-planning prompts |
 | Demo app | Next.js, React Flow, GitHub Copilot SDK fallback |
 
-### 📚 Resources and Next Steps
+### Resources and next steps
 
 Everything for DEM341 should be discoverable from this repository.
 
@@ -89,12 +89,12 @@ Everything for DEM341 should be discoverable from this repository.
     <td align="center"><a href="https://github.com/hancwang">
         <img src="https://github.com/hancwang.png" width="100px;" alt="Hanchi Wang"/><br />
         <sub><b>Hanchi Wang</b></sub></a><br />
-            <a href="https://github.com/hancwang" title="GitHub profile">📢</a>
+            <a href="https://github.com/hancwang" title="GitHub profile">GitHub profile</a>
     </td>
     <td align="center"><a href="https://github.com/nagkumar91">
         <img src="https://github.com/nagkumar91.png" width="100px;" alt="Nagkumar Arkalgud"/><br />
         <sub><b>Nagkumar Arkalgud</b></sub></a><br />
-            <a href="https://github.com/nagkumar91" title="GitHub profile">📢</a>
+            <a href="https://github.com/nagkumar91" title="GitHub profile">GitHub profile</a>
     </td>
 </tr></table>
 
