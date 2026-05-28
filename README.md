@@ -31,7 +31,7 @@ The demo proves a simple thesis: Foundry observability can work with any agent f
 |:---------------|:--------------|
 | Foundry hosted orchestrator | A bring-your-own-code agent hosted by Microsoft Foundry, implemented with Microsoft Agent Framework and the OpenAI Responses protocol. |
 | Seattle specialist | A LangGraph travel agent running on AWS Lambda. |
-| Bangalore specialist | A Google Agent Development Kit travel agent running on Google Cloud Run. |
+| Bengaluru specialist | A Google Agent Development Kit travel agent running on Google Cloud Run. |
 | Xi'an specialist | A Microsoft Foundry Prompt Agent using a low-code/no-code authoring flow. |
 | GitHub Copilot fallback | A fallback path for unsupported cities so the app still returns a useful answer. |
 | Unified tracing | One distributed trace across Foundry, AWS, Google Cloud, and GitHub-backed execution paths using W3C trace context and OpenTelemetry GenAI semantic conventions. |
@@ -52,7 +52,7 @@ Try these prompts with GitHub Copilot to explore the topics from this demo. Open
 
 Use these as a starting point — or write your own!
 
-- "Explain how the orchestrator routes a request to the Seattle, Bangalore, Xi'an, or fallback agent."
+- "Explain how the orchestrator routes a request to the Seattle, Bengaluru, Xi'an, or fallback agent."
 - "Show me where W3C trace context is injected before calling a remote specialist agent."
 - "Summarize the OpenTelemetry GenAI attributes this demo relies on and where each one is emitted."
 - "Find the evaluation dataset and explain which rows test happy paths, fan-out, fallback, and adversarial behavior."
