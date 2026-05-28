@@ -86,10 +86,10 @@ Everything for DEM341 should be discoverable from this repository.
 
 <table>
 <tr>
-    <td align="center"><a href="https://github.com/hancwang">
-        <img src="https://github.com/hancwang.png" width="100px;" alt="Hanchi Wang"/><br />
+    <td align="center"><a href="https://github.com/luigiw">
+        <img src="https://github.com/luigiw.png" width="100px;" alt="Hanchi Wang"/><br />
         <sub><b>Hanchi Wang</b></sub></a><br />
-            <a href="https://github.com/hancwang" title="GitHub profile">GitHub profile</a>
+            <a href="https://github.com/luigiw" title="GitHub profile">GitHub profile</a>
     </td>
     <td align="center"><a href="https://github.com/nagkumar91">
         <img src="https://github.com/nagkumar91.png" width="100px;" alt="Nagkumar Arkalgud"/><br />
