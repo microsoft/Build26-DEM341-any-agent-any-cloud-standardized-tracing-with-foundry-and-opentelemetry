@@ -119,8 +119,8 @@ def normalize_city(label: str) -> str:
     lowered = label.lower()
     if "seattle" in lowered:
         return "seattle"
-    if "bangalore" in lowered or "bengaluru" in lowered:
-        return "bangalore"
+    if "bengaluru" in lowered:
+        return "bengaluru"
     if "xi'an" in lowered or "xian" in lowered or "xi an" in lowered:
         return "xian"
     if "copilot" in lowered:

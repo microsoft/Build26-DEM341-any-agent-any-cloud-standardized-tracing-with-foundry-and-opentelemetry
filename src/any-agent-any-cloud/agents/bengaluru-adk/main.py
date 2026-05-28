@@ -1,4 +1,4 @@
-"""Bangalore travel specialist agent.
+"""Bengaluru travel specialist agent.
 
 Stack: Google ADK + Vertex AI (Gemini), FastAPI, OTel GenAI semconv.
 """
@@ -16,9 +16,9 @@ from pydantic import BaseModel
 
 from telemetry import configure_telemetry, current_trace_id_hex
 
-SERVICE_NAME = "bangalore-adk"
-AGENT_NAME = "bangalore_specialist"
-CITY = "Bangalore"
+SERVICE_NAME = "bengaluru-adk"
+AGENT_NAME = "bengaluru_specialist"
+CITY = "Bengaluru"
 REGION = os.getenv("GOOGLE_CLOUD_REGION", "us-central1")
 PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT", "")
 MODEL_ID = os.getenv("VERTEX_MODEL_ID", "gemini-2.0-flash-001")
@@ -31,9 +31,9 @@ tracer = configure_telemetry(
     demo_city=CITY,
 )
 
-SYSTEM_PROMPT = """You are a Bangalore (Bengaluru) travel specialist. Build a
-concise, day-by-day plan for Bangalore, India. Cover Cubbon Park, Lalbagh,
-Bangalore Palace, Church Street, Indiranagar, local cafes and breweries,
+SYSTEM_PROMPT = """You are a Bengaluru travel specialist. Build a
+concise, day-by-day plan for Bengaluru, India. Cover Cubbon Park, Lalbagh,
+Bengaluru Palace, Church Street, Indiranagar, local cafes and breweries,
 South Indian food (dosa, idli, filter coffee), and practical tips (traffic,
 weather, Namma Metro, rideshare timing). Markdown only."""
 
@@ -45,7 +45,7 @@ def _build_agent():
         name=AGENT_NAME,
         model=MODEL_ID,
         instruction=SYSTEM_PROMPT,
-        description="Bangalore travel specialist",
+        description="Bengaluru travel specialist",
     )
 
 
@@ -56,9 +56,9 @@ async def _run_agent(query: str) -> str:
     from google.adk.runners import InMemoryRunner
     from google.genai import types as gen_types
 
-    runner = InMemoryRunner(agent=AGENT, app_name="bangalore-adk")
+    runner = InMemoryRunner(agent=AGENT, app_name="bengaluru-adk")
     session = await runner.session_service.create_session(
-        app_name="bangalore-adk", user_id="demo"
+        app_name="bengaluru-adk", user_id="demo"
     )
     final = ""
     async for event in runner.run_async(
@@ -79,9 +79,9 @@ async def _stream_agent(query: str) -> AsyncIterator[str]:
     from google.adk.runners import InMemoryRunner
     from google.genai import types as gen_types
 
-    runner = InMemoryRunner(agent=AGENT, app_name="bangalore-adk")
+    runner = InMemoryRunner(agent=AGENT, app_name="bengaluru-adk")
     session = await runner.session_service.create_session(
-        app_name="bangalore-adk", user_id="demo"
+        app_name="bengaluru-adk", user_id="demo"
     )
     seen_text = ""
     async for event in runner.run_async(
@@ -120,7 +120,7 @@ class PlanResponse(BaseModel):
     trace_id: str
 
 
-app = FastAPI(title="Bangalore Specialist Agent")
+app = FastAPI(title="Bengaluru Specialist Agent")
 FastAPIInstrumentor.instrument_app(app)
 
 SHARED_SECRET = os.getenv("DEMO_SHARED_SECRET", "")
@@ -138,10 +138,10 @@ async def plan(req: PlanRequest, request: Request, x_demo_auth: str | None = Hea
 
     # No `context=...`: the FastAPI middleware already extracted the
     # upstream W3C traceparent from request headers and set the
-    # `POST /plan` server span as the current context, so `bangalore.plan`
+    # `POST /plan` server span as the current context, so `bengaluru.plan`
     # naturally becomes a child of that server span.
     with tracer.start_as_current_span(
-        "bangalore.plan",
+        "bengaluru.plan",
         attributes={
             "gen_ai.operation.name": "agent",
             "gen_ai.agent.name": AGENT_NAME,
@@ -184,7 +184,7 @@ async def plan_stream(
         # server span (which itself parents under the upstream
         # invoke_agent span via the extracted traceparent).
         with tracer.start_as_current_span(
-            "bangalore.plan.stream",
+            "bengaluru.plan.stream",
             attributes={
                 "gen_ai.operation.name": "agent",
                 "gen_ai.agent.name": AGENT_NAME,

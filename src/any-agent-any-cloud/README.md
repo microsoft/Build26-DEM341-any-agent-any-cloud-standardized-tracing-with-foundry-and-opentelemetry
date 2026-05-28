@@ -28,7 +28,7 @@ Client / curl / Foundry playground
           | HTTPS          | HTTPS          | Foundry call      | local subprocess
           v                v                v                   v
 +------------------+ +------------------+ +------------------+ +------------------+
-| Seattle agent    | | Bangalore agent  | | Xi'an agent      | | Copilot fallback |
+| Seattle agent    | | Bengaluru agent  | | Xi'an agent      | | Copilot fallback |
 | LangGraph        | | Google ADK       | | Prompt Agent v2  | | Copilot SDK      |
 | AWS Lambda       | | GCP Cloud Run    | | Azure AI Foundry | | in orchestrator  |
 | Foundry gpt-5.4  | | Gemini/Vertex AI | | gpt-5.4          | | any 4th city     |
@@ -54,14 +54,14 @@ The four execution targets behind that router are:
 | Agent | Framework | Cloud / runtime | Model | Source path | Deploy |
 |---|---|---|---|---|---|
 | Seattle specialist | LangGraph | AWS Lambda | Foundry `gpt-5.4` | `agents/seattle-langgraph/` | `./scripts/deploy-aws.sh` |
-| Bangalore specialist | Google ADK | GCP Cloud Run | Gemini on Vertex AI | `agents/bangalore-adk/` | `./scripts/deploy-gcp.sh` |
+| Bengaluru specialist | Google ADK | GCP Cloud Run | Gemini on Vertex AI | `agents/bengaluru-adk/` | `./scripts/deploy-gcp.sh` |
 | Xi'an specialist | Foundry Prompt Agent v2 | Azure AI Foundry | `gpt-5.4` | `agents/xian-foundry/` | `python scripts/deploy-foundry.py` |
 | Copilot fallback | GitHub Copilot SDK subprocess | Runs inside the orchestrator container | GitHub Copilot model selection | `orchestrator/main.py` | included in `azd up` / `azd deploy foundry-orchestrator` |
 
 ## Why this works
 
 1. **OTel GenAI semantic conventions are the contract.** Foundry Observability does not require every remote agent to use the same framework; it requires spans shaped like standard `gen_ai.*` telemetry.
-2. **Python agents use `microsoft-opentelemetry`.** The Seattle, Bangalore, and orchestrator Python code paths use the Microsoft distro to emit GenAI spans and send them to a single Application Insights resource.
+2. **Python agents use `microsoft-opentelemetry`.** The Seattle, Bengaluru, and orchestrator Python code paths use the Microsoft distro to emit GenAI spans and send them to a single Application Insights resource.
 3. **Foreign runtimes can still join the trace.** The Copilot SDK emits OTLP only, so the orchestrator container starts an `otelcol-contrib` sidecar (`orchestrator/start.sh`, `orchestrator/otel-collector-config.yaml`) that forwards OTLP to Azure Monitor.
 4. **W3C trace propagation stitches the graph.** The orchestrator injects `traceparent` on outbound hops, so AWS, GCP, Azure Foundry, and the local subprocess all show up as one distributed trace.
 
@@ -70,7 +70,7 @@ For the exact span/resource conventions used by this demo, see [`docs/otel-conve
 ## Repo layout
 
 ```text
-agents/        City specialists: Seattle (LangGraph), Bangalore (ADK), Xi'an (Foundry)
+agents/        City specialists: Seattle (LangGraph), Bengaluru (ADK), Xi'an (Foundry)
 azd-infra/     Bicep for Azure resources provisioned by `azd up`
 docs/          OTel conventions and evaluation setup notes
 infra/         Generated environment files and connection-string artifacts
@@ -115,13 +115,13 @@ azd deploy foundry-orchestrator
 
 This builds the Lambda container image, pushes it to ECR, updates the function, and writes `infra/seattle-aws.env`.
 
-### 3) Deploy the Bangalore specialist to GCP
+### 3) Deploy the Bengaluru specialist to GCP
 
 ```bash
 ./scripts/deploy-gcp.sh
 ```
 
-This deploys from source to Cloud Run and writes `infra/bangalore-gcp.env`.
+This deploys from source to Cloud Run and writes `infra/bengaluru-gcp.env`.
 
 ### 4) Register Foundry prompt and external agents
 
@@ -129,7 +129,7 @@ This deploys from source to Cloud Run and writes `infra/bangalore-gcp.env`.
 python scripts/deploy-foundry.py
 ```
 
-This creates or updates the Xi'an Prompt Agent plus the Seattle and Bangalore external-agent wrappers, then writes Foundry agent metadata to `infra/foundry-endpoints.env`.
+This creates or updates the Xi'an Prompt Agent plus the Seattle and Bengaluru external-agent wrappers, then writes Foundry agent metadata to `infra/foundry-endpoints.env`.
 
 ## How to verify it works
 

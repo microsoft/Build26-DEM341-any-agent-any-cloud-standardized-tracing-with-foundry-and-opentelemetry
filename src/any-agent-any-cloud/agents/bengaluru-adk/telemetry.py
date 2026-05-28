@@ -1,4 +1,4 @@
-"""OTel bootstrap for the Bangalore agent.
+"""OTel bootstrap for the Bengaluru agent.
 
 `microsoft-opentelemetry` is the primary integration here. It configures the
 OpenTelemetry SDK plus Azure Monitor export in one call.

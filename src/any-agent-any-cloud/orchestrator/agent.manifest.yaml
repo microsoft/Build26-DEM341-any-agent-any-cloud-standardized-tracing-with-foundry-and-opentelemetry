@@ -1,7 +1,7 @@
 name: foundry-orchestrator
 description: >
   "Any Agent, Any Cloud" travel orchestrator. Routes customer questions to the
-  matching city specialist agent (Seattle on AWS, Bangalore on GCP, Xi'an as
+  matching city specialist agent (Seattle on AWS, Bengaluru on GCP, Xi'an as
   a Foundry Prompt Agent). Hosted on Foundry as a container, exposing the
   OpenAI Responses protocol.
 metadata:
@@ -46,8 +46,8 @@ template:
       value: "{{AWS_SECRET_ACCESS_KEY}}"
     - name: AWS_REGION
       value: "{{AWS_REGION}}"
-    - name: BANGALORE_AGENT_URL
-      value: "{{BANGALORE_AGENT_URL}}"
+    - name: BENGALURU_AGENT_URL
+      value: "{{BENGALURU_AGENT_URL}}"
     - name: DEMO_SHARED_SECRET
       value: "{{DEMO_SHARED_SECRET}}"
 resources:

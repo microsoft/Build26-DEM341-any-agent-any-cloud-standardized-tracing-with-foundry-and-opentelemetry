@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy Bangalore agent to GCP Cloud Run (source-based build).
+# Deploy Bengaluru agent to GCP Cloud Run (source-based build).
 # Scale-to-zero: no fixed cost when idle.
 set -euo pipefail
 
@@ -8,8 +8,8 @@ PROJECT="${GOOGLE_CLOUD_PROJECT:-langgraph-agent-488906}"
 REGION="${GOOGLE_CLOUD_REGION:-us-central1}"
 MODEL_ID="${VERTEX_MODEL_ID:-gemini-2.5-flash-lite}"
 MODEL_LOCATION="${GOOGLE_CLOUD_LOCATION:-us-central1}"
-SERVICE="anyagent-bangalore"
-SA_EMAIL="bangalore-vertex-sa@${PROJECT}.iam.gserviceaccount.com"
+SERVICE="anyagent-bengaluru"
+SA_EMAIL="bengaluru-vertex-sa@${PROJECT}.iam.gserviceaccount.com"
 
 CONN_STRING="$(cat "$ROOT/infra/appinsights-conn.txt")"
 
@@ -19,9 +19,9 @@ gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregi
 
 echo ">>> Ensure Cloud Run service account exists"
 if ! gcloud iam service-accounts describe "$SA_EMAIL" --project="$PROJECT" >/dev/null 2>&1; then
-  gcloud iam service-accounts create bangalore-vertex-sa \
+  gcloud iam service-accounts create bengaluru-vertex-sa \
     --project="$PROJECT" \
-    --display-name="Bangalore Vertex AI service account"
+    --display-name="Bengaluru Vertex AI service account"
 fi
 
 echo ">>> Allow SA to pull from Artifact Registry / run as Cloud Run identity"
@@ -34,7 +34,7 @@ echo ">>> Deploy from source (Cloud Build builds and pushes image)"
 gcloud run deploy "$SERVICE" \
   --project="$PROJECT" \
   --region="$REGION" \
-  --source="$ROOT/agents/bangalore-adk" \
+  --source="$ROOT/agents/bengaluru-adk" \
   --service-account="$SA_EMAIL" \
   --allow-unauthenticated \
   --port=8080 \
@@ -45,7 +45,6 @@ gcloud run deploy "$SERVICE" \
 URL="$(gcloud run services describe "$SERVICE" --project="$PROJECT" --region="$REGION" --format='value(status.url)')"
 URL="${URL%/}"
 {
-  echo "BANGALORE_AGENT_URL=$URL"
-  echo "KL_AGENT_URL=$URL"
-} | tee "$ROOT/infra/bangalore-gcp.env"
+  echo "BENGALURU_AGENT_URL=$URL"
+} | tee "$ROOT/infra/bengaluru-gcp.env"
 echo ">>> done."

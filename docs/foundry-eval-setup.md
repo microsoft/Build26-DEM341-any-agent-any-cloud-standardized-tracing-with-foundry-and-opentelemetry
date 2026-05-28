@@ -39,7 +39,7 @@ Use the existing judge deployment:
 This repo already emits the right trace shape:
 
 - Top-level orchestrator span: **`chat foundry-orchestrator`**
-- Child specialist spans: **`seattle.specialist`**, **`bangalore.specialist`**, **`xian.specialist`**, or **`chat github-copilot`**
+- Child specialist spans: **`seattle.specialist`**, **`bengaluru.specialist`**, **`xian.specialist`**, or **`chat github-copilot`**
 - Application Insights destination: your linked Application Insights resource
 
 The code contract behind the traces is in:
@@ -47,7 +47,7 @@ The code contract behind the traces is in:
 - `orchestrator/agent.yaml`
 - `orchestrator/main.py`
 - `agents/seattle-langgraph/main.py`
-- `agents/bangalore-adk/main.py`
+- `agents/bengaluru-adk/main.py`
 
 ## 2) Online evaluation (continuous, on production traces)
 
@@ -102,7 +102,7 @@ Two evaluator caveats matter for this demo:
    - evaluation charts for the enabled evaluators
 5. Open a trace and confirm the span tree includes:
    - `chat foundry-orchestrator`
-   - the routed specialist span (`seattle.specialist`, `bangalore.specialist`, `xian.specialist`, or `chat github-copilot`)
+   - the routed specialist span (`seattle.specialist`, `bengaluru.specialist`, `xian.specialist`, or `chat github-copilot`)
 
 ## 3) Offline evaluation (batch, curated dataset)
 
@@ -113,7 +113,7 @@ The curated dataset for this repo is:
 Each row contains:
 
 ```json
-{"query":"...","expected_city":"seattle|bangalore|xian|copilot","intent":"trip_planning|...","notes":"..."}
+{"query":"...","expected_city":"seattle|bengaluru|xian|copilot","intent":"trip_planning|...","notes":"..."}
 ```
 
 Use it two ways:
@@ -246,7 +246,7 @@ Capture these before showtime so you have both live and backup visuals:
    - show enabled evaluators and the **10%** sample rate
 3. **Single trace view**
    - highlight `chat foundry-orchestrator`
-   - highlight one specialist child span (`seattle.specialist`, `bangalore.specialist`, `xian.specialist`, or `chat github-copilot`)
+   - highlight one specialist child span (`seattle.specialist`, `bengaluru.specialist`, `xian.specialist`, or `chat github-copilot`)
 4. **Project -> Evaluation run list**
    - call out **Status**, **Evaluation tokens**, **Target tokens**, and aggregate scores
 5. **Evaluation row detail**
@@ -258,7 +258,7 @@ Capture these before showtime so you have both live and backup visuals:
 Use realistic thresholds rather than promising exact values:
 
 - **Run success rate:** aim for **>95%**
-- **Intent Resolution:** call out anything consistently **high/pass** across Seattle/Bangalore/Xi'an/fallback paths
+- **Intent Resolution:** call out anything consistently **high/pass** across Seattle/Bengaluru/Xi'an/fallback paths
 - **Task Adherence:** point out cases where the agent stayed in travel-planning scope
 - **Latency:** compare supported-city routes vs fallback (`chat github-copilot`) route
 - **Tool Call Accuracy:** use as a diagnostic metric; if sparse, explain that this orchestrator uses cross-cloud external specialists rather than only first-party tools
@@ -298,7 +298,7 @@ Checks:
 3. Wait 2-5 minutes for ingestion.
 4. Generate a fresh request and search for the returned `trace_id`.
 5. Verify the orchestrator still emits the expected root span pattern (`chat foundry-orchestrator`).
-6. If Seattle/Bangalore child spans are missing, confirm upstream services are still forwarding W3C trace context.
+6. If Seattle/Bengaluru child spans are missing, confirm upstream services are still forwarding W3C trace context.
 
 ### Judge model / evaluator errors
 
@@ -340,7 +340,7 @@ If Monitor shows skipped evaluation runs, the usual cause is the hourly cap. Inc
 ## 8) Recommended demo flow
 
 1. Turn on continuous evaluation for `foundry-orchestrator`.
-2. Send 3-5 live prompts covering Seattle, Bangalore, Xi'an, and fallback.
+2. Send 3-5 live prompts covering Seattle, Bengaluru, Xi'an, and fallback.
 3. Show the **Monitor** tab first.
 4. Drill into one trace.
 5. Then show the offline batch evaluation run from `scripts/eval-dataset.jsonl` for the curated regression view.

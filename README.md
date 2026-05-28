@@ -12,7 +12,7 @@
 
 Teams are shipping agents across clouds and frameworks, but telemetry is often fragmented. This demo shows how Microsoft Foundry and OpenTelemetry GenAI semantic conventions create one observability plane for agents running on Microsoft Foundry, AWS Lambda, GCP Cloud Run, and GitHub Copilot SDK-based fallback paths.
 
-The repo contains the reproducible demo assets: a Foundry-hosted orchestrator, a Seattle LangGraph agent on AWS Lambda, a Bangalore Google ADK agent on GCP Cloud Run, a Xi'an Foundry Prompt Agent, deployment scripts, OpenTelemetry conventions, and evaluation setup notes.
+The repo contains the reproducible demo assets: a Foundry-hosted orchestrator, a Seattle LangGraph agent on AWS Lambda, a Bengaluru Google ADK agent on GCP Cloud Run, a Xi'an Foundry Prompt Agent, deployment scripts, OpenTelemetry conventions, and evaluation setup notes.
 
 ### 🚀 Getting started
 
@@ -38,7 +38,7 @@ Try these prompts with GitHub Copilot Chat after you clone the repo:
 - `Show me where the Seattle LangGraph agent configures microsoft-opentelemetry and how its spans get agent identity attributes.`
 - `Walk me through docs/recreate-demo.md and tell me which cloud credentials I need before running the deployment scripts.`
 - `Using docs/otel-conventions.md, summarize the ideal trace tree for a Seattle request.`
-- `Help me adapt the Bangalore ADK agent to a different city while preserving the GenAI telemetry attributes.`
+- `Help me adapt the Bengaluru ADK agent to a different city while preserving the GenAI telemetry attributes.`
 
 ### 💻 Technologies Used
 

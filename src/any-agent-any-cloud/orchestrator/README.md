@@ -16,7 +16,7 @@ export SEATTLE_LAMBDA_NAME=anyagent-seattle
 export SEATTLE_LAMBDA_REGION=us-west-2
 # AWS credentials for boto3 (or rely on ~/.aws/credentials)
 # export AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=...
-export BANGALORE_AGENT_URL=http://localhost:8081
+export BENGALURU_AGENT_URL=http://localhost:8081
 # Xi'an always talks to the remote Foundry Prompt Agent:
 export FOUNDRY_PROJECT_ENDPOINT="https://<account>.services.ai.azure.com/api/projects/<project>"
 export XIAN_AGENT_NAME=xian-specialist

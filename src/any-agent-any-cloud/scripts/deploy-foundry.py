@@ -3,7 +3,7 @@
 This script creates:
 - Xi'an as a native Foundry Prompt Agent.
 - Seattle as a Foundry Prompt Agent wrapper around an AWS Lambda Function URL.
-- Bangalore as a Foundry Prompt Agent wrapper around a GCP Cloud Run URL.
+- Bengaluru as a Foundry Prompt Agent wrapper around a GCP Cloud Run URL.
 
 The hosted orchestrator is deployed separately with `azd deploy
 foundry-orchestrator`; it calls the external AWS/GCP endpoints directly so
@@ -192,12 +192,12 @@ def main() -> int:
     model = _azd_value("AZURE_AI_MODEL_DEPLOYMENT_NAME", "gpt-5.4")
     shared_secret = _azd_value("DEMO_SHARED_SECRET", "devsecret") or "devsecret"
     seattle_url = _azd_value("SEATTLE_AGENT_URL")
-    bangalore_url = _azd_value("BANGALORE_AGENT_URL") or _azd_value("KL_AGENT_URL")
+    bengaluru_url = _azd_value("BENGALURU_AGENT_URL")
 
     if not endpoint:
         raise SystemExit("Missing AZURE_AI_PROJECT_ENDPOINT/FOUNDRY_PROJECT_ENDPOINT.")
-    if not bangalore_url:
-        raise SystemExit("Missing BANGALORE_AGENT_URL. Deploy GCP first.")
+    if not bengaluru_url:
+        raise SystemExit("Missing BENGALURU_AGENT_URL. Deploy GCP first.")
 
     print(f">>> Foundry endpoint: {endpoint}")
     print(f">>> Model deployment: {model}")
@@ -222,14 +222,14 @@ def main() -> int:
         "XIAN_AGENT_VERSION": str(xian.version),
     }
 
-    versions["BANGALORE_AGENT_NAME"] = "bangalore-specialist"
-    versions["BANGALORE_AGENT_VERSION"] = _create_external_prompt_agent(
+    versions["BENGALURU_AGENT_NAME"] = "bengaluru-specialist"
+    versions["BENGALURU_AGENT_VERSION"] = _create_external_prompt_agent(
         project=project,
         model=model,
-        agent_name="bangalore-specialist",
-        city="Bangalore",
-        operation_name="call_bangalore_specialist",
-        server_url=bangalore_url,
+        agent_name="bengaluru-specialist",
+        city="Bengaluru",
+        operation_name="call_bengaluru_specialist",
+        server_url=bengaluru_url,
         shared_secret=shared_secret,
         hosting_description="GCP Cloud Run",
     )

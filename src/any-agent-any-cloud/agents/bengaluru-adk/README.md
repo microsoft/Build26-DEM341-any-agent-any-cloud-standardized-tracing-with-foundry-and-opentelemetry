@@ -1,6 +1,6 @@
-# Bangalore Specialist Agent
+# Bengaluru Specialist Agent
 
-Travel specialist for **Bangalore / Bengaluru**. Stack:
+Travel specialist for **Bengaluru**. Stack:
 - **Google ADK** (Agent Development Kit)
 - **Gemini on Vertex AI**
 - **FastAPI** server exposing `POST /plan`
@@ -9,7 +9,7 @@ Travel specialist for **Bangalore / Bengaluru**. Stack:
 ## Local run
 
 ```bash
-cd agents/bangalore-adk
+cd agents/bengaluru-adk
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
@@ -30,5 +30,5 @@ Test:
 curl -X POST http://localhost:8081/plan \
   -H 'content-type: application/json' \
   -H 'x-demo-auth: devsecret' \
-  -d '{"query":"4 days in Bangalore with kids, food-focused"}'
+  -d '{"query":"4 days in Bengaluru with kids, food-focused"}'
 ```

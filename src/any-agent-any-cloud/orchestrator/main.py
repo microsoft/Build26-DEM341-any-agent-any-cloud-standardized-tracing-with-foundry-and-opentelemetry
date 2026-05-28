@@ -9,7 +9,7 @@ The orchestrator is now a **multi-agent workflow** built with
     RouterExecutor (LLM picks which cities are mentioned)
         |
         +-> SeattleExecutor    (AWS Lambda via boto3)
-        +-> BangaloreExecutor  (GCP Cloud Run via HTTPS)
+        +-> BengaluruExecutor  (GCP Cloud Run via HTTPS)
         +-> XianExecutor       (Foundry Prompt Agent via Responses API)
         +-> CopilotExecutor    (GitHub Copilot SDK fallback for any other city)
         |
@@ -60,7 +60,7 @@ REGION = os.getenv("AZURE_REGION", "eastus2")
 # that client-side `invoke_agent <name>` spans correlate cleanly with the
 # server-side agent execution in Foundry Observability.
 SEATTLE_AGENT_NAME = "seattle_specialist"
-BANGALORE_AGENT_NAME = "bangalore_specialist"
+BENGALURU_AGENT_NAME = "bengaluru_specialist"
 COPILOT_AGENT_NAME = "copilot-fallback"
 
 # OTel bootstrap (TracerProvider, Azure Monitor exporter, instrumentors,
@@ -183,9 +183,9 @@ def _current_trace_id_hex() -> str:
 SEATTLE_LAMBDA_NAME = os.environ["SEATTLE_LAMBDA_NAME"]
 SEATTLE_LAMBDA_REGION = os.getenv("SEATTLE_LAMBDA_REGION", "us-west-2")
 SEATTLE_URL = os.getenv("SEATTLE_AGENT_URL", "")
-BANGALORE_URL = os.getenv(
-    "BANGALORE_AGENT_URL",
-    os.getenv("KL_AGENT_URL", "http://localhost:8081"),
+BENGALURU_URL = os.getenv(
+    "BENGALURU_AGENT_URL",
+    "http://localhost:8081",
 )
 XIAN_AGENT_NAME = os.environ["XIAN_AGENT_NAME"]  # remote Foundry Prompt Agent
 FOUNDRY_PROJECT_ENDPOINT = os.environ["FOUNDRY_PROJECT_ENDPOINT"]
@@ -199,13 +199,13 @@ Given a customer's travel question, pick exactly ONE specialist to handle it.
 You have FOUR specialists:
 
   * "seattle"  - Seattle, USA specialist (LangGraph on AWS Lambda)
-  * "bangalore" - Bangalore, India specialist (Google ADK on GCP)
+  * "bengaluru" - Bengaluru, India specialist (Google ADK on GCP)
   * "xian"     - Xi'an, China specialist (Foundry Prompt Agent)
   * "copilot"  - General-purpose travel knowledge fallback (GitHub Copilot)
 
 Rules:
 - If the customer asks about Seattle, choose "seattle".
-- If the customer asks about Bangalore or Bengaluru, choose "bangalore".
+- If the customer asks about Bengaluru, choose "bengaluru".
 - If the customer asks about Xi'an, choose "xian".
 - For any other single city (or no city at all), choose "copilot".
 - If the customer mentions multiple supported cities at once, pick the
@@ -401,10 +401,10 @@ async def _specialist_seattle(query: str) -> str:
     return await _call_seattle_lambda(query)
 
 
-async def _specialist_bangalore(query: str) -> str:
-    """Plan a trip in Bangalore, India via the ADK specialist on GCP."""
+async def _specialist_bengaluru(query: str) -> str:
+    """Plan a trip in Bengaluru, India via the ADK specialist on GCP."""
     return await _call_http_specialist(
-        "bangalore", BANGALORE_AGENT_NAME, BANGALORE_URL, query
+        "bengaluru", BENGALURU_AGENT_NAME, BENGALURU_URL, query
     )
 
 
@@ -548,7 +548,7 @@ async def _specialist_copilot(query: str) -> str:
 # city is selected, otherwise emits an empty CitySectionResult so the
 # fan-in aggregator can synchronize on all four sources.
 
-ALL_CITIES = ("seattle", "bangalore", "xian", "copilot")
+ALL_CITIES = ("seattle", "bengaluru", "xian", "copilot")
 
 
 @dataclass
@@ -561,7 +561,7 @@ class CitySelection:
 
 _CITY_KEYWORDS = {
     "seattle": ["seattle"],
-    "bangalore": ["bangalore", "bengaluru"],
+    "bengaluru": ["bengaluru"],
     "xian": ["xi'an", "xian", "xi an"],
 }
 
@@ -662,7 +662,7 @@ def _build_workflow_agent():
     Topology:
 
         RouterExecutor  --(city == "seattle")-->  SeattleExecutor  --> yield_output
-                        --(city == "bangalore")>  BangaloreExecutor --> yield_output
+                        --(city == "bengaluru")>  BengaluruExecutor --> yield_output
                         --(city == "xian")---->  XianExecutor      --> yield_output
                         --(else)--------------->  CopilotExecutor  --> yield_output
 
@@ -683,13 +683,13 @@ def _build_workflow_agent():
 
     router = RouterExecutor(router_agent)
     seattle = _make_specialist_executor("seattle", _specialist_seattle)
-    bangalore = _make_specialist_executor("bangalore", _specialist_bangalore)
+    bengaluru = _make_specialist_executor("bengaluru", _specialist_bengaluru)
     xian = _make_specialist_executor("xian", _specialist_xian)
     copilot = _make_specialist_executor("copilot", _specialist_copilot)
 
     specialists = {
         "seattle": seattle,
-        "bangalore": bangalore,
+        "bengaluru": bengaluru,
         "xian": xian,
         "copilot": copilot,
     }
@@ -702,14 +702,14 @@ def _build_workflow_agent():
             name="any-agent-any-cloud-orchestrator",
             description=(
                 "Routes a travel question to exactly one city specialist "
-                "(Seattle on AWS Lambda, Bangalore on GCP Cloud Run, Xi'an on Foundry, "
+                "(Seattle on AWS Lambda, Bengaluru on GCP Cloud Run, Xi'an on Foundry, "
                 "or GitHub Copilot fallback)."
             ),
             start_executor=router,
             output_executors=list(specialists.values()),
         )
         .add_edge(router, seattle, condition=_is("seattle"))
-        .add_edge(router, bangalore, condition=_is("bangalore"))
+        .add_edge(router, bengaluru, condition=_is("bengaluru"))
         .add_edge(router, xian, condition=_is("xian"))
         .add_edge(router, copilot, condition=_is("copilot"))
         .build()

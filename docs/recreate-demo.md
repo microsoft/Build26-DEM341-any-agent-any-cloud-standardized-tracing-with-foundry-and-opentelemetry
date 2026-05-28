@@ -4,7 +4,7 @@ This runbook recreates the "Any agent, any cloud" demo. The final topology is:
 
 - Microsoft Foundry hosted orchestrator using Microsoft Agent Framework.
 - Seattle specialist on AWS Lambda using LangGraph and Azure Foundry model calls.
-- Bangalore specialist on GCP Cloud Run using Google ADK and Gemini Flash-Lite.
+- Bengaluru specialist on GCP Cloud Run using Google ADK and Gemini Flash-Lite.
 - Xi'an specialist as a native Foundry Prompt Agent.
 - One Application Insights resource collecting distributed traces from all paths.
 
@@ -67,25 +67,25 @@ mkdir -p infra
 azd env get-value APPLICATIONINSIGHTS_CONNECTION_STRING > infra/appinsights-conn.txt
 ```
 
-## 3. Deploy Bangalore to GCP Cloud Run
+## 3. Deploy Bengaluru to GCP Cloud Run
 
-The Bangalore specialist uses Google ADK and defaults to `gemini-2.5-flash-lite` in `us-central1`.
+The Bengaluru specialist uses Google ADK and defaults to `gemini-2.5-flash-lite` in `us-central1`.
 
 ```bash
 export GOOGLE_CLOUD_REGION=us-central1
 export GOOGLE_CLOUD_LOCATION=us-central1
 export VERTEX_MODEL_ID=gemini-2.5-flash-lite
 ./scripts/deploy-gcp.sh
-source infra/bangalore-gcp.env
-azd env set BANGALORE_AGENT_URL "$BANGALORE_AGENT_URL"
+source infra/bengaluru-gcp.env
+azd env set BENGALURU_AGENT_URL "$BENGALURU_AGENT_URL"
 ```
 
 The script creates or updates:
 
-- Cloud Run service `anyagent-bangalore`.
-- Service account `bangalore-vertex-sa`.
+- Cloud Run service `anyagent-bengaluru`.
+- Service account `bengaluru-vertex-sa`.
 - Required Google Cloud APIs.
-- `infra/bangalore-gcp.env`.
+- `infra/bengaluru-gcp.env`.
 
 ## 4. Deploy Seattle to AWS Lambda
 
@@ -129,8 +129,8 @@ source infra/foundry-endpoints.env
 
 azd env set XIAN_AGENT_NAME "$XIAN_AGENT_NAME"
 azd env set XIAN_AGENT_VERSION "$XIAN_AGENT_VERSION"
-azd env set BANGALORE_AGENT_NAME "$BANGALORE_AGENT_NAME"
-azd env set BANGALORE_AGENT_VERSION "$BANGALORE_AGENT_VERSION"
+azd env set BENGALURU_AGENT_NAME "$BENGALURU_AGENT_NAME"
+azd env set BENGALURU_AGENT_VERSION "$BENGALURU_AGENT_VERSION"
 azd env set SEATTLE_AGENT_NAME "$SEATTLE_AGENT_NAME"
 azd env set SEATTLE_AGENT_VERSION "$SEATTLE_AGENT_VERSION"
 ```
@@ -138,7 +138,7 @@ azd env set SEATTLE_AGENT_VERSION "$SEATTLE_AGENT_VERSION"
 The external-agent wrappers use OpenAPI tools for:
 
 - `SEATTLE_AGENT_URL/plan`
-- `BANGALORE_AGENT_URL/plan`
+- `BENGALURU_AGENT_URL/plan`
 
 ## 6. Deploy the hosted orchestrator
 
@@ -165,7 +165,7 @@ curl -fsS -X POST \
 
 Repeat with:
 
-- `Give me one concise Bangalore coffee recommendation.`
+- `Give me one concise Bengaluru coffee recommendation.`
 - `Give me one concise Xi'an history recommendation.`
 
 ## 8. Validate traces in Application Insights
