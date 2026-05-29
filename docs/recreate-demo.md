@@ -4,7 +4,7 @@ This runbook recreates the "Any agent, any cloud" demo. The final topology is:
 
 - Microsoft Foundry hosted orchestrator using Microsoft Agent Framework.
 - Seattle specialist on AWS Lambda using LangGraph and Azure Foundry model calls.
-- Bengaluru specialist on GCP Cloud Run using Google ADK and Gemini Flash-Lite.
+- Bengaluru specialist on GCP Cloud Run using Google ADK and Vertex AI.
 - Xi'an specialist as a native Foundry Prompt Agent.
 - One Application Insights resource collecting distributed traces from all paths.
 
@@ -28,8 +28,8 @@ az login
 azd auth login
 
 aws configure sso
-aws sso login --profile dem341
-export AWS_PROFILE=dem341
+aws sso login --profile <your-aws-profile>
+export AWS_PROFILE=<your-aws-profile>
 export AWS_REGION=us-west-2
 
 gcloud auth login
@@ -43,7 +43,7 @@ export GOOGLE_CLOUD_PROJECT=<your-gcp-project-id>
 From `src/any-agent-any-cloud`:
 
 ```bash
-azd env new dem341
+azd env new <environment-name>
 azd env set AZURE_LOCATION centralus
 azd env set AZURE_AI_DEPLOYMENTS_LOCATION northcentralus
 azd env set ENABLE_HOSTED_AGENTS true
@@ -58,7 +58,7 @@ This provisions:
 - Microsoft Foundry account and project.
 - Application Insights and Log Analytics.
 - Azure Container Registry for hosted-agent images.
-- `gpt-5.4` model deployment used by the orchestrator and Seattle Lambda.
+- Foundry model deployment used by the orchestrator and Seattle Lambda.
 
 Save the Application Insights connection string for the external agents:
 
@@ -69,12 +69,12 @@ azd env get-value APPLICATIONINSIGHTS_CONNECTION_STRING > infra/appinsights-conn
 
 ## 3. Deploy Bengaluru to GCP Cloud Run
 
-The Bengaluru specialist uses Google ADK and defaults to `gemini-2.5-flash-lite` in `us-central1`.
+The Bengaluru specialist uses Google ADK and Vertex AI.
 
 ```bash
-export GOOGLE_CLOUD_REGION=us-central1
-export GOOGLE_CLOUD_LOCATION=us-central1
-export VERTEX_MODEL_ID=gemini-2.5-flash-lite
+export GOOGLE_CLOUD_REGION=<google-cloud-region>
+export GOOGLE_CLOUD_LOCATION=<google-cloud-location>
+export VERTEX_MODEL_ID=<vertex-model-id>
 ./scripts/deploy-gcp.sh
 source infra/bengaluru-gcp.env
 azd env set BENGALURU_AGENT_URL "$BENGALURU_AGENT_URL"
@@ -89,7 +89,7 @@ The script creates or updates:
 
 ## 4. Deploy Seattle to AWS Lambda
 
-The Seattle specialist runs on AWS Lambda with LangGraph. To keep the demo independent from Bedrock quota, it calls the Foundry `gpt-5.4` deployment for model work.
+The Seattle specialist runs on AWS Lambda with LangGraph. To keep the demo independent from Bedrock quota, it calls the configured Foundry model deployment for model work.
 
 For a demo environment, the simplest path is to use an Azure OpenAI key in the Lambda environment. Enable local auth only if your organization allows it:
 
@@ -102,7 +102,7 @@ az resource update --ids "$ACCOUNT_ID" --set properties.disableLocalAuth=false
 
 export AZURE_OPENAI_ENDPOINT=$(azd env get-value AZURE_OPENAI_ENDPOINT)
 export AZURE_AI_MODEL_DEPLOYMENT_NAME=$(azd env get-value AZURE_AI_MODEL_DEPLOYMENT_NAME)
-export AZURE_OPENAI_API_VERSION=2025-04-01-preview
+export AZURE_OPENAI_API_VERSION=<api-version>
 export AZURE_OPENAI_API_KEY=$(az cognitiveservices account keys list -g "$RG" -n "$ACCOUNT" --query key1 -o tsv)
 
 ./scripts/deploy-aws.sh
@@ -146,7 +146,7 @@ The external-agent wrappers use OpenAPI tools for:
 azd deploy foundry-orchestrator --no-prompt
 ```
 
-Hosted-agent deployment can sometimes report a `containers/default:start` 404 even when the new version becomes active. If that happens, check the version status in Foundry or wait a minute and invoke the agent.
+Hosted-agent deployment can sometimes report a transient container start error even when the deployment becomes active. If that happens, check the deployment status in Foundry or wait a minute and invoke the agent.
 
 ## 7. Validate the demo
 
@@ -157,7 +157,7 @@ ENDPOINT=$(azd env get-value AZURE_AI_PROJECT_ENDPOINT)
 TOKEN=$(az account get-access-token --resource https://ai.azure.com --query accessToken -o tsv)
 
 curl -fsS -X POST \
-  "$ENDPOINT/agents/foundry-orchestrator/endpoint/protocols/openai/responses?api-version=2025-05-15-preview" \
+  "$ENDPOINT/agents/foundry-orchestrator/endpoint/protocols/openai/responses?api-version=<responses-api-version>" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"input":"Plan a rainy Seattle coffee stop and one iconic indoor activity. Keep it concise."}'
@@ -170,17 +170,13 @@ Repeat with:
 
 ## 8. Validate traces in Application Insights
 
-Use a fixed trace ID so the trace is easy to find:
+Send another request, then use the returned trace ID to find the trace:
 
 ```bash
-TRACE_ID=ccccddddeeeeffff0000111122223333
-SPAN_ID=34567890abcdef12
-
 curl -fsS -X POST \
-  "$ENDPOINT/agents/foundry-orchestrator/endpoint/protocols/openai/responses?api-version=2025-05-15-preview" \
+  "$ENDPOINT/agents/foundry-orchestrator/endpoint/protocols/openai/responses?api-version=<responses-api-version>" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -H "traceparent: 00-$TRACE_ID-$SPAN_ID-01" \
   -d '{"input":"Plan a rainy Seattle coffee stop and one iconic indoor activity. Keep it concise."}'
 ```
 
@@ -189,7 +185,7 @@ Query Application Insights:
 ```kusto
 union isfuzzy=true AppRequests, AppDependencies, AppTraces
 | where TimeGenerated > ago(30m)
-| where OperationId == "ccccddddeeeeffff0000111122223333"
+| where OperationId == "<returned-trace-id>"
 | project TimeGenerated, OperationId, AppRoleName, Type, Name, Id, ParentId, DurationMs, Success, Properties, Message
 | order by TimeGenerated asc
 ```
@@ -200,7 +196,7 @@ For a Seattle route, the important trace shape is:
 foundry-orchestrator
 ├─ router decision
 │  └─ invoke_agent city_router
-│     └─ chat gpt-5.4
+│     └─ chat <model-deployment>
 └─ invoke_agent seattle_specialist
    └─ POST /plan                         (AWS Lambda / FastAPI)
       └─ seattle.plan
@@ -208,7 +204,7 @@ foundry-orchestrator
             └─ invoke_agent LangGraph    (Microsoft OpenTelemetry distro)
                └─ plan
                   └─ seattle.azure_foundry.invoke
-                     └─ POST /openai/responses
+                     └─ model request
 ```
 
 The LangGraph spans are emitted by the Microsoft OpenTelemetry distro for Python with static agent identity configured in `agents/seattle-langgraph/telemetry.py`.

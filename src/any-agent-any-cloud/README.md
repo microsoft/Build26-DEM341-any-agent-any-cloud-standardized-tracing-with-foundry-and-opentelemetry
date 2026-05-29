@@ -9,8 +9,6 @@ This repo is a travel-concierge demo that proves a simple thesis: **Azure AI Fou
 - How an `otelcol-contrib` sidecar bridges OTLP-only runtimes into App Insights
 - How W3C `traceparent` propagation stitches one end-to-end trace across clouds
 
-> Reference deployment: `foundry-orchestrator:v17`
-
 ## Architecture
 
 ```text
@@ -29,9 +27,9 @@ Client / curl / Foundry playground
           v                v                v                   v
 +------------------+ +------------------+ +------------------+ +------------------+
 | Seattle agent    | | Bengaluru agent  | | Xi'an agent      | | Copilot fallback |
-| LangGraph        | | Google ADK       | | Prompt Agent v2  | | Copilot SDK      |
+| LangGraph        | | Google ADK       | | Prompt Agent     | | Copilot SDK      |
 | AWS Lambda       | | GCP Cloud Run    | | Azure AI Foundry | | in orchestrator  |
-| Foundry gpt-5.4  | | Gemini/Vertex AI | | gpt-5.4          | | any 4th city     |
+| Foundry model    | | Gemini/Vertex AI | | Foundry model    | | other cities     |
 +------------------+ +------------------+ +------------------+ +------------------+
           \                |                /                  /
            \               |               /                  /
@@ -51,12 +49,12 @@ The orchestrator is the control plane: a Foundry hosted agent implemented in `or
 
 The four execution targets behind that router are:
 
-| Agent | Framework | Cloud / runtime | Model | Source path | Deploy |
-|---|---|---|---|---|---|
-| Seattle specialist | LangGraph | AWS Lambda | Foundry `gpt-5.4` | `agents/seattle-langgraph/` | `./scripts/deploy-aws.sh` |
-| Bengaluru specialist | Google ADK | GCP Cloud Run | Gemini on Vertex AI | `agents/bengaluru-adk/` | `./scripts/deploy-gcp.sh` |
-| Xi'an specialist | Foundry Prompt Agent v2 | Azure AI Foundry | `gpt-5.4` | `agents/xian-foundry/` | `python scripts/deploy-foundry.py` |
-| Copilot fallback | GitHub Copilot SDK subprocess | Runs inside the orchestrator container | GitHub Copilot model selection | `orchestrator/main.py` | included in `azd up` / `azd deploy foundry-orchestrator` |
+| Agent | Framework | Cloud / runtime | Source path | Deploy |
+|---|---|---|---|---|
+| Seattle specialist | LangGraph | AWS Lambda | `agents/seattle-langgraph/` | `./scripts/deploy-aws.sh` |
+| Bengaluru specialist | Google ADK | GCP Cloud Run | `agents/bengaluru-adk/` | `./scripts/deploy-gcp.sh` |
+| Xi'an specialist | Foundry Prompt Agent | Azure AI Foundry | `agents/xian-foundry/` | `python scripts/deploy-foundry.py` |
+| Copilot fallback | GitHub Copilot SDK subprocess | Runs inside the orchestrator container | `orchestrator/main.py` | included in `azd up` / `azd deploy foundry-orchestrator` |
 
 ## Why this works
 
@@ -85,7 +83,7 @@ azure.yaml     azd service definition for the Foundry hosted orchestrator
 ### Prerequisites
 
 - Azure Developer CLI (`azd`) and Azure CLI authenticated to a subscription
-- Python **3.12+**
+- Python supported by the repo
 - Docker (used by the AWS Lambda image build and Azure remote build flow)
 - AWS CLI configured for an account that can deploy Lambda, ECR, and IAM resources
 - `gcloud` CLI configured for a project that can deploy Cloud Run and Vertex AI access
@@ -156,16 +154,6 @@ For the attendee-facing setup guide, see [`../../docs/recreate-demo.md`](../../d
 ## OTel conventions
 
 For the exact telemetry contract, required attributes, and propagation details, see [`docs/otel-conventions.md`](docs/otel-conventions.md).
-
-## Validation snapshot
-
-The Seattle path was validated in Application Insights with one W3C trace that stitched:
-
-```text
-Foundry hosted orchestrator -> AWS Lambda / FastAPI -> LangGraph -> Foundry gpt-5.4
-```
-
-The Microsoft OpenTelemetry distro for Python emits the LangGraph spans with `gen_ai.agent.name=seattle_specialist` and `gen_ai.agent.id=seattle-specialist-aws`.
 
 ## License / contact
 

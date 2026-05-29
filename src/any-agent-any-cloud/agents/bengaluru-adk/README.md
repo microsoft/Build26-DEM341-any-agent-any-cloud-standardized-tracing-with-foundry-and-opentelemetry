@@ -13,10 +13,10 @@ cd agents/bengaluru-adk
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-export GOOGLE_CLOUD_PROJECT=langgraph-agent-488906
-export GOOGLE_CLOUD_REGION=us-central1
-export GOOGLE_CLOUD_LOCATION=us-central1
-export VERTEX_MODEL_ID=gemini-2.5-flash-lite
+export GOOGLE_CLOUD_PROJECT=<google-cloud-project>
+export GOOGLE_CLOUD_REGION=<google-cloud-region>
+export GOOGLE_CLOUD_LOCATION=<google-cloud-location>
+export VERTEX_MODEL_ID=<vertex-model-id>
 export GOOGLE_GENAI_USE_VERTEXAI=true
 gcloud auth application-default login   # one-time
 export APPLICATIONINSIGHTS_CONNECTION_STRING="$(cat ../../infra/appinsights-conn.txt)"

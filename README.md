@@ -73,17 +73,11 @@ Use these as a starting point — or write your own!
 | Topic | Microsoft resource |
 |:------|:-------------------|
 | Hosted agents | [Foundry hosted agents](https://learn.microsoft.com/azure/foundry/agents/concepts/hosted-agents?view=foundry) |
-| Agent runtime | [Foundry Agent Service runtime components](https://learn.microsoft.com/azure/foundry/agents/concepts/runtime-components?view=foundry) |
-| Agent lifecycle | [Agent development lifecycle in Microsoft Foundry](https://learn.microsoft.com/azure/foundry/agents/concepts/development-lifecycle) |
-| Agent tracing | [Agent tracing overview](https://learn.microsoft.com/azure/foundry/observability/concepts/trace-agent-concept) |
-| Tracing setup | [Set up tracing in Microsoft Foundry](https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup) |
-| Framework tracing | [Tracing integrations for Microsoft Agent Framework, LangChain, LangGraph, and OpenAI Agents SDK](https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-framework) |
-| LangChain and LangGraph traces | [Trace LangChain and LangGraph apps with Microsoft Foundry](https://learn.microsoft.com/azure/foundry/how-to/develop/langchain-traces) |
+| Agent tracing | [Tracing in Microsoft Foundry](https://learn.microsoft.com/azure/foundry/observability/concepts/trace-agent-concept) |
+| Framework tracing | [Trace common agent frameworks](https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-framework) |
 | Azure Monitor OpenTelemetry | [Azure Monitor OpenTelemetry Distro](https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable?tabs=python) |
-| Observability blog | [Achieve end-to-end observability in Azure AI Foundry](https://devblogs.microsoft.com/foundry/achieve-end-to-end-observability-in-azure-ai-foundry/) |
-| Hosted agents blog | [Introducing hosted agents in Foundry Agent Service](https://devblogs.microsoft.com/foundry/introducing-the-new-hosted-agents-in-foundry-agent-service-secure-scalable-compute-built-for-agents/) |
-| Foundry Toolbox | [Curate intent-based toolboxes in Foundry](https://learn.microsoft.com/azure/foundry/agents/how-to/tools/toolbox) and [Introducing Toolboxes in Foundry](https://devblogs.microsoft.com/foundry/introducing-toolboxes-in-foundry/) |
-| Agent tools | [Agent tools overview for Foundry Agent Service](https://learn.microsoft.com/azure/foundry/agents/concepts/tool-catalog) |
+| Foundry Toolboxes | [Curate intent-based toolboxes](https://learn.microsoft.com/azure/foundry/agents/how-to/tools/toolbox) |
+| Observability blog | [End-to-end observability in Azure AI Foundry](https://devblogs.microsoft.com/foundry/achieve-end-to-end-observability-in-azure-ai-foundry/) |
 
 ### Resources and next steps
 

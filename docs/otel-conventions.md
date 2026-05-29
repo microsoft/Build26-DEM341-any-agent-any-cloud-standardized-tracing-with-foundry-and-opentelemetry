@@ -7,16 +7,16 @@ All four agents (Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, Xi'an / Fou
 | Attribute | Example | Notes |
 |---|---|---|
 | `gen_ai.system` | `az.ai.foundry`, `gcp.vertex_ai` | Model provider |
-| `gen_ai.request.model` | `gpt-5.4`, `gemini-2.5-flash-lite` | Model id as called |
+| `gen_ai.request.model` | `<model deployment>` | Model id as called |
 | `gen_ai.operation.name` | `chat`, `invoke_agent` | Operation kind. The orchestrator emits one `invoke_agent <agent.name>` client span per sub-agent dispatch. |
 | `gen_ai.agent.name` | `seattle_specialist`, `bengaluru_specialist`, `xian-specialist`, `copilot-fallback` | Stable agent identifier. On an `invoke_agent` span this is the **invoked** specialist, not the caller. |
 | `gen_ai.agent.id` | `seattle-specialist-aws` | Optional deployed-agent identifier when a framework instrumentor supports it. The Seattle LangGraph agent passes this into the LangChain instrumentor. |
-| `gen_ai.usage.input_tokens` | `523` | Input tokens (when known) |
-| `gen_ai.usage.output_tokens` | `812` | Output tokens (when known) |
+| `gen_ai.usage.input_tokens` | `<input tokens>` | Input tokens (when known) |
+| `gen_ai.usage.output_tokens` | `<output tokens>` | Output tokens (when known) |
 | `service.name` | `seattle-langgraph` | OTel resource: per-agent service name |
 | `service.namespace` | `anyagent-demo` | Shared across all agents |
 | `cloud.provider` | `aws` / `gcp` / `azure` | Identifies hosting cloud |
-| `cloud.region` | `us-west-2`, `us-central1`, `northcentralus` | |
+| `cloud.region` | `<cloud region>` | |
 | `demo.city` | `Seattle`, `Bengaluru`, `Xi'an` | Custom: which specialist |
 
 ## Span structure

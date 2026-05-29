@@ -2,7 +2,7 @@
 
 Travel specialist for **Seattle**. Stack:
 - **LangGraph** (agent framework)
-- **Azure Foundry `gpt-5.4`** (LLM)
+- **Azure Foundry model deployment** (LLM)
 - **FastAPI** server exposing `POST /plan`
 - **OpenTelemetry GenAI semantic conventions** via the `microsoft-opentelemetry` distro
 
@@ -13,9 +13,9 @@ cd agents/seattle-langgraph
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-export AWS_REGION=us-west-2
+export AWS_REGION=<aws-region>
 export AZURE_OPENAI_ENDPOINT="https://<account>.openai.azure.com/"
-export AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-5.4
+export AZURE_AI_MODEL_DEPLOYMENT_NAME=<model-deployment-name>
 export AZURE_OPENAI_API_KEY=...
 export APPLICATIONINSIGHTS_CONNECTION_STRING="$(cat ../../infra/appinsights-conn.txt)"
 export DEMO_SHARED_SECRET=devsecret
@@ -34,7 +34,7 @@ curl -X POST http://localhost:8080/plan \
 ## Trace attributes
 
 - `service.name=seattle-langgraph`
-- `cloud.provider=aws`, `cloud.region=us-west-2`
+- `cloud.provider=aws`, `cloud.region=<aws-region>`
 - `gen_ai.system=az.ai.foundry`, `gen_ai.agent.name=seattle_specialist`
 - LangGraph spans include `gen_ai.agent.id=seattle-specialist-aws`
 - `demo.city=Seattle`
