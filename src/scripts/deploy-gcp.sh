@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Deploy Bengaluru agent to GCP Cloud Run (source-based build).
+# Scale-to-zero: no fixed cost when idle.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PROJECT="${GOOGLE_CLOUD_PROJECT:-langgraph-agent-488906}"
+REGION="${GOOGLE_CLOUD_REGION:-us-central1}"
+MODEL_ID="${VERTEX_MODEL_ID:-gemini-2.5-flash-lite}"
+MODEL_LOCATION="${GOOGLE_CLOUD_LOCATION:-us-central1}"
+SERVICE="anyagent-bengaluru"
+SA_EMAIL="bengaluru-vertex-sa@${PROJECT}.iam.gserviceaccount.com"
+
+CONN_STRING="$(cat "$ROOT/infra/appinsights-conn.txt")"
+
+echo ">>> Ensure required GCP APIs enabled"
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com aiplatform.googleapis.com \
+  --project="$PROJECT" 2>&1 | tail -3
+
+echo ">>> Ensure Cloud Run service account exists"
+if ! gcloud iam service-accounts describe "$SA_EMAIL" --project="$PROJECT" >/dev/null 2>&1; then
+  gcloud iam service-accounts create bengaluru-vertex-sa \
+    --project="$PROJECT" \
+    --display-name="Bengaluru Vertex AI service account"
+fi
+
+echo ">>> Allow SA to pull from Artifact Registry / run as Cloud Run identity"
+gcloud projects add-iam-policy-binding "$PROJECT" \
+  --member="serviceAccount:${SA_EMAIL}" --role=roles/aiplatform.user --condition=None 2>&1 | tail -2
+
+# Cloud Run needs to invoke the SA — granted at deployment via --service-account flag.
+
+echo ">>> Deploy from source (Cloud Build builds and pushes image)"
+gcloud run deploy "$SERVICE" \
+  --project="$PROJECT" \
+  --region="$REGION" \
+  --source="$ROOT/agents/bengaluru-adk" \
+  --service-account="$SA_EMAIL" \
+  --allow-unauthenticated \
+  --port=8080 \
+  --cpu=1 --memory=1Gi --timeout=120s \
+  --min-instances=0 --max-instances=3 \
+  --set-env-vars="APPLICATIONINSIGHTS_CONNECTION_STRING=${CONN_STRING},GOOGLE_CLOUD_PROJECT=${PROJECT},GOOGLE_CLOUD_REGION=${REGION},GOOGLE_CLOUD_LOCATION=${MODEL_LOCATION},GOOGLE_GENAI_USE_VERTEXAI=true,VERTEX_MODEL_ID=${MODEL_ID},BENGALURU_AGENT_ID=bengaluru-specialist-gcp,DEMO_SHARED_SECRET=devsecret,ENABLE_SENSITIVE_DATA=true,AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING=true,OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=SPAN_AND_EVENT,OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental"
+
+URL="$(gcloud run services describe "$SERVICE" --project="$PROJECT" --region="$REGION" --format='value(status.url)')"
+URL="${URL%/}"
+
+echo ">>> Set A2A_PUBLIC_BASE_URL now that the public URL is known (for the A2A agent card)"
+gcloud run services update "$SERVICE" \
+  --project="$PROJECT" --region="$REGION" \
+  --update-env-vars="A2A_PUBLIC_BASE_URL=${URL}" >/dev/null
+
+{
+  echo "BENGALURU_AGENT_URL=$URL"
+} | tee "$ROOT/infra/bengaluru-gcp.env"
+echo ">>> done."

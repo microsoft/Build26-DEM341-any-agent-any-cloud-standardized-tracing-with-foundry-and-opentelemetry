@@ -1,0 +1,32 @@
+# Bengaluru Specialist Agent
+
+Travel specialist for **Bengaluru**. Stack:
+- **Google ADK** (Agent Development Kit)
+- **Gemini on Vertex AI** (LLM; swap to Claude on Vertex if available)
+- **FastAPI** server exposing `POST /plan`
+- **OpenTelemetry GenAI semconv** via the `microsoft-opentelemetry` distro
+
+## Local run
+
+```bash
+cd agents/bengaluru-adk
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+export GOOGLE_CLOUD_PROJECT=langgraph-agent-488906
+export GOOGLE_CLOUD_REGION=asia-south1
+export GOOGLE_GENAI_USE_VERTEXAI=true
+gcloud auth application-default login   # one-time
+export APPLICATIONINSIGHTS_CONNECTION_STRING="$(cat ../../infra/appinsights-conn.txt)"
+export DEMO_SHARED_SECRET=devsecret
+
+uvicorn main:app --host 0.0.0.0 --port 8081
+```
+
+Test:
+```bash
+curl -X POST http://localhost:8081/plan \
+  -H 'content-type: application/json' \
+  -H 'x-demo-auth: devsecret' \
+  -d '{"query":"4 days in Bengaluru with kids, food-focused"}'
+```

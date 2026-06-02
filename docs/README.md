@@ -1,16 +1,12 @@
-# /docs
+# Documentation
 
-This folder is for documentation and step-by-step content for your session.
+This folder contains public documentation for the DEM341 sample.
 
-## What goes here
+| Document | Description |
+|:---------|:------------|
+| [architecture-diagram.md](architecture-diagram.md) | High-level architecture of the multi-cloud agent demo. |
+| [otel-conventions.md](otel-conventions.md) | OpenTelemetry GenAI semantic convention notes used by the sample. |
+| [foundry-eval-setup.md](foundry-eval-setup.md) | Trace-based evaluation setup notes for Microsoft Foundry. |
+| [a2a-external-agents.md](a2a-external-agents.md) | A2A external-agent registration and trace propagation notes. |
 
-- **Labs/Workshops**: Step-by-step instructions organized into numbered exercises (e.g., `01-setup/`, `02-first-exercise/`)
-- **Demos**: Walkthrough documentation explaining the demo code in `/src`
-- **Breakouts**: Supplementary documentation, diagrams, or reference material
-
-## Tips
-
-- Use numbered prefixes for ordering: `01-setup/`, `02-exercise/`, `03-wrap-up/`
-- Each subfolder can have its own `README.md` or `index.md`
-- Keep images in an `assets/` subfolder if needed
-- If your session doesn't have documentation beyond the README, feel free to remove this folder
+The live talk track/demo script is not published here.

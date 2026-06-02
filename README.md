@@ -77,6 +77,7 @@ Everything for DEM341 should be discoverable from this repository.
 | [README.md](README.md) | Session overview and the starting point for all DEM341 material. |
 | [docs/](docs/) | Demo walkthroughs, architecture notes, OpenTelemetry conventions, and evaluation setup. |
 | [src/](src/) | Demo source and samples, including the orchestrator, specialist agents, user interface, and deployment helpers. |
+| [LAB540](https://github.com/microsoft/Build26-LAB540-observe-optimize-and-protect-your-hosted-agents-in-microsoft-foundry) | Related Build 2026 lab: Observe, optimize, and protect your hosted agents in Microsoft Foundry. |
 | Slides | Session slides will be linked from this README after the deck is cleared for publication. |
 | [GitHub Issues](../../issues) | Ask questions, report problems, or request follow-up examples. |
 | [SUPPORT.md](SUPPORT.md) | Support expectations and Microsoft open source support information. |

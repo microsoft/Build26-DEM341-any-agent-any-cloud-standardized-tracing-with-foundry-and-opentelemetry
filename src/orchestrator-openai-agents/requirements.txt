@@ -1,0 +1,15 @@
+# openai-agents SDK orchestrator — pins resolved + locally validated on py3.12.
+openai-agents==0.17.4
+openai==2.38.0
+# Microsoft OpenTelemetry distro: bridges openai-agents native tracing into OTel
+# GenAI semconv (invoke_agent / execute_tool) and optionally exports to Azure
+# Monitor. The [openai-agents] extra pulls
+# opentelemetry-instrumentation-openai-agents-v2.
+microsoft-opentelemetry[openai-agents]>=1.3.2
+opentelemetry-sdk>=1.40.0
+# Foundry hosted-agent runtime exposing the OpenAI Responses protocol on :8088.
+azure-ai-agentserver-responses==1.0.0b7
+azure-ai-projects>=2.2.0
+azure-identity>=1.25.3
+# Used by specialists.py to invoke the Seattle LangGraph specialist on AWS Lambda.
+boto3>=1.43.0

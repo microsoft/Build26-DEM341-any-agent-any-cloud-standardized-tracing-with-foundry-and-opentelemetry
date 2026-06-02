@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
+kind: hosted
+name: foundry-orchestrator
+description: |
+    "Any Agent, Any Cloud" travel orchestrator. Routes customer questions to the
+    matching city specialist agent (Seattle on AWS, Bengaluru on GCP, Xi'an
+    as a Foundry Prompt Agent). Hosted on Foundry as a container, exposing the
+    OpenAI Responses protocol.
+metadata:
+    tags:
+        - Agent Framework
+        - AI Agent Hosting
+        - Responses Protocol
+        - Multi-Cloud
+        - Observability
+protocols:
+    - protocol: responses
+      version: 1.0.0
+resources:
+    cpu: "0.5"
+    memory: 1Gi
+environment_variables:
+    - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+      value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+    - name: AZURE_OPENAI_ENDPOINT
+      value: ${AZURE_OPENAI_ENDPOINT}
+    - name: AZURE_REGION
+      value: ${AZURE_LOCATION}
+    # Enable GenAI tracing in azure-ai-projects (off by default) and
+    # capture chat-message content on those spans. Foundry's hosted-agent
+    # runtime owns the TracerProvider/exporter; these flags only control
+    # whether the SDK emits GenAI spans at all and how much detail.
+    - name: AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING
+      value: "true"
+    - name: OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT
+      value: "true"
+    - name: OTEL_SEMCONV_STABILITY_OPT_IN
+      value: "gen_ai_latest_experimental"
+    - name: ENABLE_SENSITIVE_DATA
+      value: "true"
+    - name: AZURE_TRACING_GEN_AI_TRACE_CONTEXT_PROPAGATION_INCLUDE_BAGGAGE
+      value: "true"
+    - name: XIAN_AGENT_NAME
+      value: ${XIAN_AGENT_NAME}
+    - name: XIAN_AGENT_VERSION
+      value: ${XIAN_AGENT_VERSION}
+    - name: SEATTLE_LAMBDA_NAME
+      value: ${SEATTLE_LAMBDA_NAME}
+    - name: SEATTLE_LAMBDA_REGION
+      value: ${SEATTLE_LAMBDA_REGION}
+    - name: SEATTLE_AGENT_URL
+      value: ${SEATTLE_AGENT_URL}
+    - name: AWS_ACCESS_KEY_ID
+      value: ${AWS_ACCESS_KEY_ID}
+    - name: AWS_SECRET_ACCESS_KEY
+      value: ${AWS_SECRET_ACCESS_KEY}
+    - name: AWS_REGION
+      value: ${AWS_REGION}
+    - name: BENGALURU_AGENT_URL
+      value: ${BENGALURU_AGENT_URL}
+    - name: DEMO_SHARED_SECRET
+      value: ${DEMO_SHARED_SECRET}
+    - name: GITHUB_TOKEN
+      value: ${GITHUB_TOKEN}
+    - name: COPILOT_MODEL
+      value: ${COPILOT_MODEL}
+    - name: COPILOT_TOOLBOX_ENDPOINT
+      value: ${COPILOT_TOOLBOX_ENDPOINT}
+    - name: COPILOT_TOOLBOX_FEATURES
+      value: ${COPILOT_TOOLBOX_FEATURES}

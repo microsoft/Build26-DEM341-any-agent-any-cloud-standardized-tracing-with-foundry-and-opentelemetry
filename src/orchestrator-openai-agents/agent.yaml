@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/AgentSchema/refs/heads/main/schemas/v1.0/ContainerAgent.yaml
+kind: hosted
+name: openai-agents-orchestrator
+description: |
+    "Any Agent, Any Cloud" travel orchestrator built on the OpenAI Agents SDK.
+    Routes a customer travel question to the matching city specialist agent
+    (Seattle on AWS Lambda, Bengaluru on GCP Cloud Run, Xi'an as a Foundry
+    prompt agent), running them in parallel when several cities are mentioned.
+    Hosted on Foundry as a container, exposing the OpenAI Responses protocol.
+metadata:
+    tags:
+        - OpenAI Agents SDK
+        - AI Agent Hosting
+        - Responses Protocol
+        - Multi-Cloud
+        - Observability
+protocols:
+    - protocol: responses
+      version: 1.0.0
+resources:
+    cpu: "0.5"
+    memory: 1Gi
+environment_variables:
+    - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+      value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+    - name: AZURE_REGION
+      value: ${AZURE_LOCATION}
+    # Enable GenAI tracing + sensitive-content capture on the emitted spans. The
+    # Foundry hosted runtime owns the exporter; these flags control whether the
+    # GenAI spans are emitted and how much detail they carry.
+    - name: AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING
+      value: "true"
+    - name: OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT
+      value: "SPAN_AND_EVENT"
+    - name: OTEL_SEMCONV_STABILITY_OPT_IN
+      value: "gen_ai_latest_experimental"
+    - name: ENABLE_SENSITIVE_DATA
+      value: "true"
+    - name: XIAN_AGENT_NAME
+      value: ${XIAN_AGENT_NAME}
+    - name: SEATTLE_LAMBDA_NAME
+      value: ${SEATTLE_LAMBDA_NAME}
+    - name: SEATTLE_LAMBDA_REGION
+      value: ${SEATTLE_LAMBDA_REGION}
+    - name: SEATTLE_AGENT_URL
+      value: ${SEATTLE_AGENT_URL}
+    - name: AWS_ACCESS_KEY_ID
+      value: ${AWS_ACCESS_KEY_ID}
+    - name: AWS_SECRET_ACCESS_KEY
+      value: ${AWS_SECRET_ACCESS_KEY}
+    - name: AWS_REGION
+      value: ${AWS_REGION}
+    - name: BENGALURU_AGENT_URL
+      value: ${BENGALURU_AGENT_URL}
+    - name: DEMO_SHARED_SECRET
+      value: ${DEMO_SHARED_SECRET}
