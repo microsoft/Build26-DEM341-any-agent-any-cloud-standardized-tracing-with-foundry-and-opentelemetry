@@ -130,7 +130,7 @@ def _install_noise_filter_sampler() -> None:
 _agent_span_processors_installed = False
 
 
-def _install_agent_span_processors() -> None:
+def _install_agent_span_processors(agent_name: str, agent_id: str) -> None:
     """Collapse the duplicate `invoke_agent` span so each agent emits one.
 
     The Microsoft distro's LangGraph instrumentation emits a second
@@ -153,8 +153,16 @@ def _install_agent_span_processors() -> None:
     if not isinstance(provider, TracerProvider):
         return
 
-    class _RenameDuplicateAgentSpanProcessor(SpanProcessor):
+    class _AgentSpanProcessor(SpanProcessor):
+        def _stamp_agent_identity(self, span) -> None:
+            attrs = span.attributes or {}
+            if not attrs.get("gen_ai.agent.name"):
+                span.set_attribute("gen_ai.agent.name", agent_name)
+            if not attrs.get("gen_ai.agent.id"):
+                span.set_attribute("gen_ai.agent.id", agent_id)
+
         def on_start(self, span, parent_context=None):
+            self._stamp_agent_identity(span)
             if span.name == "invoke_agent LangGraph":
                 span.update_name("langgraph.pipeline")
 
@@ -167,7 +175,7 @@ def _install_agent_span_processors() -> None:
         def force_flush(self, timeout_millis: int = 30000):
             return True
 
-    provider.add_span_processor(_RenameDuplicateAgentSpanProcessor())
+    provider.add_span_processor(_AgentSpanProcessor())
     _agent_span_processors_installed = True
 
 
@@ -211,11 +219,13 @@ def configure_telemetry(
 
     _enable_genai_content_capture()
 
+    agent_id = os.getenv("SEATTLE_AGENT_ID", "seattle-specialist-aws")
     attrs: dict[str, str] = {
         "service.namespace": "anyagent-demo",
         "service.name": service_name,
         "cloud.provider": cloud_provider,
         "cloud.region": cloud_region,
+        "gen_ai.agent.id": agent_id,
         "gen_ai.agent.name": agent_name,
     }
     if demo_city:
@@ -239,9 +249,7 @@ def configure_telemetry(
             instrumentation_options={
                 "langchain": {
                     "enabled": True,
-                    "agent_id": os.getenv(
-                        "SEATTLE_AGENT_ID", "seattle-specialist-aws"
-                    ),
+                    "agent_id": agent_id,
                     "agent_name": agent_name,
                 },
             },
@@ -255,7 +263,7 @@ def configure_telemetry(
         )
 
     _install_noise_filter_sampler()
-    _install_agent_span_processors()
+    _install_agent_span_processors(agent_name, agent_id)
 
     if conn:
         _configure_lambda_span_export(conn)

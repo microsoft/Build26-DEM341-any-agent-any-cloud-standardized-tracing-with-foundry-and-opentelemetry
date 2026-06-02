@@ -141,7 +141,9 @@ def _install_noise_filter_sampler() -> None:
 _agent_span_processors_installed = False
 
 
-def _install_agent_span_processors(agent_invoke_span_name: str) -> None:
+def _install_agent_span_processors(
+    agent_invoke_span_name: str, agent_name: str, agent_id: str
+) -> None:
     """Ensure the canonical `invoke_agent <agent>` span carries gen_ai I/O.
 
     The Microsoft distro's ADK instrumentation emits one
@@ -170,12 +172,24 @@ def _install_agent_span_processors(agent_invoke_span_name: str) -> None:
     class _AgentIOEnrichProcessor(SpanProcessor):
         _MSG_KEYS = ("gen_ai.input.messages", "gen_ai.output.messages")
 
-        def __init__(self, invoke_span_name: str) -> None:
+        def __init__(
+            self, invoke_span_name: str, agent_name: str, agent_id: str
+        ) -> None:
             self._invoke_span_name = invoke_span_name
+            self._agent_name = agent_name
+            self._agent_id = agent_id
             self._live: dict[int, object] = {}
             self._lock = threading.Lock()
 
+        def _stamp_agent_identity(self, span) -> None:
+            attrs = span.attributes or {}
+            if not attrs.get("gen_ai.agent.name"):
+                span.set_attribute("gen_ai.agent.name", self._agent_name)
+            if not attrs.get("gen_ai.agent.id"):
+                span.set_attribute("gen_ai.agent.id", self._agent_id)
+
         def on_start(self, span, parent_context=None):
+            self._stamp_agent_identity(span)
             if span.name == self._invoke_span_name:
                 trace_id = span.get_span_context().trace_id
                 with self._lock:
@@ -209,7 +223,9 @@ def _install_agent_span_processors(agent_invoke_span_name: str) -> None:
         def force_flush(self, timeout_millis: int = 30000):
             return True
 
-    provider.add_span_processor(_AgentIOEnrichProcessor(agent_invoke_span_name))
+    provider.add_span_processor(
+        _AgentIOEnrichProcessor(agent_invoke_span_name, agent_name, agent_id)
+    )
     _agent_span_processors_installed = True
 
 
@@ -226,12 +242,13 @@ def configure_telemetry(
 
     _enable_genai_content_capture()
 
+    agent_id = os.getenv("BENGALURU_AGENT_ID", "bengaluru-specialist-gcp")
     attrs: dict[str, str] = {
         "service.namespace": "anyagent-demo",
         "service.name": service_name,
         "cloud.provider": cloud_provider,
         "cloud.region": cloud_region,
-        "gen_ai.agent.id": os.getenv("BENGALURU_AGENT_ID", "bengaluru-specialist-gcp"),
+        "gen_ai.agent.id": agent_id,
         "gen_ai.agent.name": agent_name,
     }
     if demo_city:
@@ -262,7 +279,7 @@ def configure_telemetry(
         )
 
     _install_noise_filter_sampler()
-    _install_agent_span_processors(f"invoke_agent {agent_name}")
+    _install_agent_span_processors(f"invoke_agent {agent_name}", agent_name, agent_id)
 
     # Auto-propagate W3C trace context into Foundry OpenAI SDK calls.
     if os.getenv("FOUNDRY_PROJECT_ENDPOINT"):
