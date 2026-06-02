@@ -14,9 +14,8 @@ This script does two things:
 2. Creates a NEW Foundry prompt agent (default name ``routing-a2a``) that invokes
    those specialists over the **A2A protocol** via ``A2APreviewTool(base_url=...)``
    — pointing at the specialists' public agent cards
-   (``/.well-known/agent-card.json``). The existing ``foundry-orchestrator``
-   hosted agent (which calls specialists over raw HTTP) is left untouched, so the
-   original demo story keeps working.
+   (``/.well-known/agent-card.json``). The showcase hosted orchestrator calls
+   the same specialists over HTTP and is left untouched by this registration.
 
 SDK notes (azure-ai-projects 2.2.0):
   * ``A2ATool`` was renamed to ``A2APreviewTool`` (2.0.1).
@@ -111,8 +110,8 @@ def build_tools() -> list:
     # responses-protocol invocation path rejects the `azure_ai_agent` tool type
     # ("Invalid value: 'azure_ai_agent'") even though create_version accepts it,
     # so this is OFF by default. The new A2A routing agent focuses on the
-    # Seattle/Bengaluru A2A path; Xi'an stays served by the original
-    # foundry-orchestrator story. Set ROUTING_A2A_INCLUDE_XIAN=1 to experiment.
+    # Seattle/Bengaluru A2A path; Xi'an stays served by the showcase
+    # orchestrator story. Set ROUTING_A2A_INCLUDE_XIAN=1 to experiment.
     if os.environ.get("ROUTING_A2A_INCLUDE_XIAN") == "1":
         xian_name = os.environ.get("XIAN_AGENT_NAME")
         xian_version = os.environ.get("XIAN_AGENT_VERSION")

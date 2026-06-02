@@ -5,8 +5,8 @@ requiredVersions:
         azure.ai.agents: '>=0.1.0-preview'
 name: anyagent-demo
 services:
-    foundry-orchestrator:
-        project: orchestrator
+    deepagents-orchestrator:
+        project: orchestrator-deepagents
         host: azure.ai.agent
         language: docker
         docker:

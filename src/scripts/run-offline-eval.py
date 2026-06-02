@@ -185,7 +185,7 @@ def print_summary(rows: list[ResultRow]) -> None:
 def main() -> int:
     args = parse_args()
     endpoint = require_env("FOUNDRY_PROJECT_ENDPOINT")
-    agent_name = os.getenv("FOUNDRY_ORCHESTRATOR_AGENT", "foundry-orchestrator").strip() or "foundry-orchestrator"
+    agent_name = os.getenv("FOUNDRY_ORCHESTRATOR_AGENT", "deepagents-orchestrator").strip() or "deepagents-orchestrator"
     agent_version = os.getenv("FOUNDRY_ORCHESTRATOR_VERSION", "").strip() or None
 
     dataset = load_dataset(args.dataset, limit=args.limit)

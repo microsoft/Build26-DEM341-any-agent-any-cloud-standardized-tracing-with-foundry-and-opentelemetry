@@ -1,6 +1,6 @@
 # OTel GenAI Conventions for "Any Agent, Any Cloud" Demo
 
-All four agents (Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, Xi'an / Foundry Prompt Agent, Foundry Hosted Orchestrator) emit OpenTelemetry traces following the **GenAI semantic conventions** and export to a single Azure Monitor (Application Insights) instance via OTLP.
+The showcase orchestrator and specialists (DeepAgents orchestrator in Foundry, Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, and Xi'an on Azure) emit OpenTelemetry traces following the **GenAI semantic conventions** and export to a single Azure Monitor (Application Insights) instance.
 
 ## Required span attributes
 
@@ -9,7 +9,7 @@ All four agents (Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, Xi'an / Fou
 | `gen_ai.system` | `aws.bedrock`, `gcp.vertex_ai`, `az.ai.foundry` | Model provider |
 | `gen_ai.request.model` | `anthropic.claude-3-5-sonnet-20241022-v2:0` | Model id as called |
 | `gen_ai.operation.name` | `chat`, `invoke_agent` | Operation kind. The orchestrator emits one `invoke_agent <agent.name>` client span per sub-agent dispatch. |
-| `gen_ai.agent.name` | `seattle_specialist`, `bengaluru_specialist`, `xian-specialist`, `copilot-fallback` | Stable agent identifier. On an `invoke_agent` span this is the **invoked** specialist, not the caller. |
+| `gen_ai.agent.name` | `deepagents-orchestrator`, `seattle_specialist`, `bengaluru_specialist`, `xian-specialist` | Stable agent identifier. On an `invoke_agent` span this is the visible agent for that span. |
 | `gen_ai.agent.id` | `seattle-specialist-aws` | Optional deployed-agent identifier when a framework instrumentor supports it. The Seattle LangGraph agent passes this into the LangChain instrumentor. |
 | `gen_ai.usage.input_tokens` | `523` | Input tokens (when known) |
 | `gen_ai.usage.output_tokens` | `812` | Output tokens (when known) |
@@ -24,10 +24,11 @@ All four agents (Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, Xi'an / Fou
 
 ## Span structure
 
-- One **root span** per user request on the orchestrator (`gen_ai.operation.name=agent`, `gen_ai.agent.name=orchestrator`).
-- Each call to a sub-agent is a **child client span** named `invoke_agent <agent.name>` with `gen_ai.operation.name=invoke_agent`, `gen_ai.agent.name` set to the invoked specialist (`seattle_specialist`, `bengaluru_specialist`, `xian-specialist`, or `copilot-fallback`), and span-level `gen_ai.input.messages` / `gen_ai.output.messages`. The W3C `traceparent` header is injected inside that span so the remote/server-side spans nest under it. For Cloud Run, the orchestrator also sends the same W3C values in `x-demo-traceparent` / `x-demo-tracestate` so the specialist can preserve the visible parent if GCP ingress rewrites the standard header.
-- Seattle attaches the propagated trace context before running LangGraph and intentionally does **not** export a `POST /plan` wrapper span; the Microsoft OTel distro's LangGraph instrumentation emits `invoke_agent seattle_specialist` directly under the orchestrator boundary span and records span-level input/output messages automatically from the graph's LangChain `messages` state. Bengaluru records its server-side `invoke_agent bengaluru_specialist` span and span-level input/output explicitly because Google ADK is not covered by that LangGraph path.
-- For Xi'an, the Foundry OpenAI client's `AIProjectInstrumentor` emits its own auto `invoke_agent xian-specialist` span when `responses.create(extra_body.agent_reference=...)` is called. The orchestrator re-attaches its OTel context inside the worker thread so that auto span is parented under the manual `invoke_agent xian-specialist` span (not a sibling).
+- One **root span** per user request on the DeepAgents orchestrator: `invoke_agent deepagents-orchestrator`, with span-level input and output.
+- Each selected city appears as an `execute_tool <city>_plan` span with `gen_ai.tool.call.arguments` and `gen_ai.tool.call.result`.
+- Each tool span parents a visible `invoke_agent <specialist>` boundary span with `gen_ai.input.messages` and `gen_ai.output.messages`.
+- Seattle and Bengaluru emit their own external-agent subtrees with registered OTel IDs: `seattle-specialist-aws` and `bengaluru-specialist-gcp`.
+- Xi'an is intentionally hosted as a tracing-light Azure service; the orchestrator-owned `invoke_agent xian-specialist` boundary span carries the input/output used for trace review and evaluation.
 
 ## Trace propagation
 
@@ -39,15 +40,14 @@ All four agents (Seattle / LangGraph on AWS, Bengaluru / ADK on GCP, Xi'an / Fou
 
 | Agent | `service.name` | `gen_ai.agent.name` | `demo.city` |
 |---|---|---|---|
-| Orchestrator | `foundry-orchestrator` | `orchestrator` | n/a |
+| Orchestrator | `deepagents-orchestrator` | `deepagents-orchestrator` | n/a |
 | Seattle | `seattle-langgraph` | `seattle_specialist` | `Seattle` |
 | Bengaluru | `bengaluru-adk` | `bengaluru_specialist` | `Bengaluru` |
-| Xi'an | `xian-foundry-prompt` | `xian-specialist` | `Xi'an` |
-| Copilot fallback | `foundry-orchestrator` | `copilot-fallback` | n/a |
+| Xi'an | `xian-a2a` | `xian-specialist` | `Xi'an` |
 
 ## Export configuration
 
-All Python agents pin the **`microsoft-opentelemetry`** distro to `1.3.1` ([microsoft/opentelemetry-distro-python](https://github.com/microsoft/opentelemetry-distro-python)), which wraps the Azure Monitor exporter and auto-instruments `agent_framework`, `openai`, `langchain`, `semantic_kernel`, `fastapi`, `httpx`, and `requests` against the OpenTelemetry GenAI semantic conventions:
+Python agents use the **`microsoft-opentelemetry`** distro ([microsoft/opentelemetry-distro-python](https://github.com/microsoft/opentelemetry-distro-python)), which wraps the Azure Monitor exporter and auto-instruments supported frameworks, FastAPI, HTTP clients, and model calls against the OpenTelemetry GenAI semantic conventions:
 
 ```
 APPLICATIONINSIGHTS_CONNECTION_STRING=<from infra/appinsights-conn.txt>
@@ -61,7 +61,7 @@ OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental
 
 The Azure-Monitor exporter (`azure-monitor-opentelemetry-exporter`) is pulled in transitively by `microsoft-opentelemetry`; we only import it directly to install a `SimpleSpanProcessor` workaround for AWS Lambda freeze-on-return.
 
-Foundry-hosted agents (orchestrator, Xi'an prompt agent) inherit Foundry's built-in tracing; we ensure the project's linked Application Insights matches `appi-anyagent-demo`.
+The Foundry-hosted DeepAgents orchestrator inherits Foundry's built-in tracing provider, then enables the Microsoft LangChain/GenAI instrumentor so the DeepAgents spans land in the project-linked Application Insights resource.
 
 ## API contract for sub-agents
 
@@ -72,4 +72,4 @@ Body: { "query": "<user request>", "trip_dates": "optional", "preferences": "opt
 Response: { "city": "...", "itinerary": "markdown", "agent": "...", "trace_id": "..." }
 ```
 
-All four agents return `trace_id` so the UI can deep-link to Foundry Observability for that trace.
+Agents return `trace_id` where the host can observe it directly; Foundry-hosted orchestrator responses are also discoverable from the Foundry trace and evaluation views.

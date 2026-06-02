@@ -9,11 +9,8 @@ multi-agent demo stack.
 | Path | Description |
 |:-----|:------------|
 | [`agents/`](agents/) | Specialist agents: Seattle on LangGraph/AWS, Bengaluru on Google ADK/GCP, and Xi'an on Azure. |
-| [`orchestrator/`](orchestrator/) | Microsoft Agent Framework orchestrator hosted on Microsoft Foundry. |
-| [`orchestrator-deepagents/`](orchestrator-deepagents/) | Alternate DeepAgents orchestrator used to compare trace shapes. |
-| [`orchestrator-openai-agents/`](orchestrator-openai-agents/) | Alternate OpenAI Agents SDK orchestrator used to compare trace shapes. |
-| [`ui/`](ui/) | Next.js trace demo UI. |
-| [`scripts/`](scripts/) | Deployment, registration, and evaluation helper scripts. |
+| [`orchestrator-deepagents/`](orchestrator-deepagents/) | Showcase DeepAgents orchestrator hosted on Microsoft Foundry. |
+| [`scripts/`](scripts/) | Specialist deployment, external-agent registration, and evaluation helper scripts. |
 | [`azd-infra/`](azd-infra/) | Azure deployment infrastructure. |
 
 ## Notes

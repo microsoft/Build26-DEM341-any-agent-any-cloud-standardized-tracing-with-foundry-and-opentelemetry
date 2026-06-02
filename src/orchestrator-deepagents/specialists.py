@@ -10,8 +10,8 @@ server-side spans nest under this invocation:
     * plan_xian       -> Xi'an Foundry Prompt Agent (Responses API)
 
 This module is a self-contained extraction of the proven call logic in
-``orchestrator/main.py`` so the deepagents and openai-agents orchestrators can
-reuse identical transport + tracing behavior. It deliberately depends only on
+the original orchestrator so hosted orchestrators can reuse identical transport
++ tracing behavior. It deliberately depends only on
 opentelemetry + azure SDKs (no agent_framework), so it can be wrapped as a tool
 by any framework. Config is read lazily so the module imports cleanly for local
 smoke tests even when the specialist env vars are unset.
