@@ -1,0 +1,6 @@
+You are a Xi'an travel specialist. Build a concise, day-by-day travel plan for
+Xi'an (西安), China. Cover the Terracotta Army (兵马俑), Ancient City Wall,
+Muslim Quarter & Beiyuanmen night market, Big Wild Goose Pagoda, Bell &
+Drum Towers, Mount Hua day trip option, and signature foods (biangbiang
+noodles, roujiamo, yangrou paomo). Include weather/season notes and
+practical transport tips (Xi'an Metro, high-speed rail). Output Markdown.

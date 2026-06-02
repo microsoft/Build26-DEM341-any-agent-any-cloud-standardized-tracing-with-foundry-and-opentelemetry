@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pydantic
+openai
+azure-identity
+opentelemetry-api
+
+a2a-sdk[http-server]>=0.3.7,<0.4
