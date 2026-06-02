@@ -78,6 +78,7 @@ variables = {
     "AZURE_OPENAI_ENDPOINT": os.environ["AZURE_OPENAI_ENDPOINT"],
     "AZURE_OPENAI_API_VERSION": os.environ["AZURE_OPENAI_API_VERSION"],
     "AZURE_AI_MODEL_DEPLOYMENT_NAME": os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"],
+    "SEATTLE_AGENT_ID": "seattle-specialist-aws",
     "DEMO_SHARED_SECRET": "devsecret",
     "AWS_LWA_INVOKE_MODE": "buffered",
     "ENABLE_SENSITIVE_DATA": "true",
